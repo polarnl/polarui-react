@@ -1,0 +1,122 @@
+import React from 'react';
+import { cn } from './cn.js';
+
+export type ButtonColor = 'sky' | 'orange' | 'red' | 'green' | 'blue' | 'dark' | 'light';
+export type ButtonTextColor = 'white' | 'black';
+
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children?: React.ReactNode;
+  color?: ButtonColor;
+  textColor?: ButtonTextColor;
+}
+
+const colorConfig: Record<ButtonColor, { border: string; from: string; to: string; hoverFrom: string; hoverTo: string }> = {
+  sky: {
+    border: '#38bdf8',
+    from: '#7DD3FC',
+    to: '#38BDF8',
+    hoverFrom: '#CFEEFC',
+    hoverTo: '#38BDF8',
+  },
+  orange: {
+    border: '#f97316',
+    from: '#FDBA74',
+    to: '#F97316',
+    hoverFrom: '#FED7AA',
+    hoverTo: '#F97316',
+  },
+  red: {
+    border: '#dc2626',
+    from: '#F87171',
+    to: '#DC2626',
+    hoverFrom: '#FCA5A5',
+    hoverTo: '#DC2626',
+  },
+  green: {
+    border: '#22c55e',
+    from: '#4ADE80',
+    to: '#22C55E',
+    hoverFrom: '#86EFAC',
+    hoverTo: '#22C55E',
+  },
+  blue: {
+    border: '#3b82f6',
+    from: '#93C5FD',
+    to: '#3B82F6',
+    hoverFrom: '#BFDBFE',
+    hoverTo: '#3B82F6',
+  },
+  dark: {
+    border: '#404040',
+    from: '#737373',
+    to: '#404040',
+    hoverFrom: '#A3A3A3',
+    hoverTo: '#404040',
+  },
+  light: {
+    border: '#e5e5e5',
+    from: '#fafafa',
+    to: '#e5e5e5',
+    hoverFrom: '#ffffff',
+    hoverTo: '#f5f5f5',
+  },
+};
+
+const textColorConfig: Record<ButtonTextColor, string> = {
+  white: '#fafafa',
+  black: '#262626',
+};
+
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ children = 'Button', className, color = 'sky', textColor, ...props }, ref) => {
+    const colors = colorConfig[color];
+
+    // Auto-detect text color based on button color if not provided
+    const resolvedTextColor = textColor
+      ? textColorConfig[textColor]
+      : ['orange', 'red', 'blue', 'light'].includes(color) ? textColorConfig.black : textColorConfig.white;
+
+    return (
+      <button
+        ref={ref}
+        style={{
+          borderColor: colors.border,
+          backgroundImage: `linear-gradient(to bottom, ${colors.from}, ${colors.to})`,
+          color: resolvedTextColor,
+        }}
+        className={cn(
+          'group',
+          'relative overflow-hidden',
+          'w-77.5 min-h-12',
+          'px-5 py-3',
+          'rounded-xl',
+          'border-[1.6px] border-solid',
+          'flex items-center justify-center gap-2.5',
+          'font-bold text-[16px] leading-5.5 tracking-[-0.112px]',
+          'transition-transform duration-100 ease-in-out',
+          'active:scale-95',
+          'cursor-pointer',
+          className
+        )}
+        {...props}
+      >
+        {/* Hover gradient overlay */}
+        <span
+          style={{
+            backgroundImage: `linear-gradient(to bottom, ${colors.hoverFrom}, ${colors.hoverTo})`,
+          }}
+          className={cn(
+            'absolute inset-0 rounded-xl',
+            'opacity-0 group-hover:opacity-100',
+            'transition-opacity duration-200 ease-in-out',
+            'pointer-events-none'
+          )}
+          aria-hidden="true"
+        />
+        <span className="relative z-10">{children}</span>
+      </button>
+    );
+  }
+);
+
+Button.displayName = 'Button';
