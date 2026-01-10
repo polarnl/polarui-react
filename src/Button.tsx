@@ -3,11 +3,14 @@ import { cn } from './cn.js';
 
 export type ButtonColor = 'sky' | 'orange' | 'red' | 'green' | 'blue' | 'dark' | 'light';
 export type ButtonTextColor = 'white' | 'black';
+export type ButtonIconSide = 'left' | 'right';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode;
   color?: ButtonColor;
   textColor?: ButtonTextColor;
+  icon?: React.ReactNode;
+  iconSide?: ButtonIconSide;
 }
 
 const colorConfig: Record<ButtonColor, { border: string; from: string; to: string; hoverFrom: string; hoverTo: string }> = {
@@ -68,7 +71,7 @@ const textColorConfig: Record<ButtonTextColor, string> = {
 };
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ children = 'Button', className, color = 'sky', textColor, ...props }, ref) => {
+  ({ children = 'Button', className, color = 'sky', textColor, icon, iconSide = 'left', ...props }, ref) => {
     const colors = colorConfig[color];
 
     // Auto-detect text color based on button color if not provided
@@ -113,7 +116,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           )}
           aria-hidden="true"
         />
-        <span className="relative z-10">{children}</span>
+        <span className={cn('relative z-10 flex items-center gap-2.5', iconSide === 'right' && 'flex-row-reverse')}>
+          {icon && <span className="shrink-0">{icon}</span>}
+          {children}
+        </span>
       </button>
     );
   }
