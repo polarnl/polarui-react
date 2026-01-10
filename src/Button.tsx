@@ -74,7 +74,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ children = 'Button', className, color = 'sky', textColor, icon, iconSide = 'left', disabled, ...props }, ref) => {
     const colors = colorConfig[color];
 
-    // Auto-detect text color based on button color if not provided
     const resolvedTextColor = textColor
       ? textColorConfig[textColor]
       : ['orange', 'red', 'blue', 'light'].includes(color) ? textColorConfig.black : textColorConfig.white;
