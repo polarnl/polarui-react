@@ -24,7 +24,7 @@ const schemeConfig: Record<InputScheme, { bg: string; border: string; text: stri
 };
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, scheme = 'light', icon, ...props }, ref) => {
+  ({ className, scheme = 'light', icon, disabled, ...props }, ref) => {
     const colors = schemeConfig[scheme];
 
     return (
@@ -39,28 +39,31 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           'rounded-xl',
           'border border-solid',
           'overflow-hidden',
+          disabled && 'opacity-50 cursor-not-allowed',
           className
         )}
       >
         {icon && (
           <span
             style={{ color: colors.text }}
-            className="flex-shrink-0 size-5 flex items-center justify-center"
+            className="shrink-0 size-5 flex items-center justify-center"
           >
             {icon}
           </span>
         )}
         <input
           ref={ref}
+          disabled={disabled}
           style={{
             color: colors.text,
             backgroundColor: 'transparent',
           }}
           className={cn(
             'flex-1 min-w-0',
-            'font-medium text-[16px] leading-[22px] tracking-[-0.112px]',
+            'font-medium text-[16px] leading-5.5 tracking-[-0.112px]',
             'outline-none border-none',
-            'placeholder:opacity-60'
+            'placeholder:opacity-60',
+            disabled && 'cursor-not-allowed'
           )}
           {...props}
         />

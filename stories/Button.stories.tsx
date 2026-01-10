@@ -84,3 +84,9 @@ export const WithIconRight: Story = {
     iconSide: 'right',
   },
 }
+
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+  },
+}

@@ -71,7 +71,7 @@ const textColorConfig: Record<ButtonTextColor, string> = {
 };
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ children = 'Button', className, color = 'sky', textColor, icon, iconSide = 'left', ...props }, ref) => {
+  ({ children = 'Button', className, color = 'sky', textColor, icon, iconSide = 'left', disabled, ...props }, ref) => {
     const colors = colorConfig[color];
 
     // Auto-detect text color based on button color if not provided
@@ -82,6 +82,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
+        disabled={disabled}
         style={{
           borderColor: colors.border,
           backgroundImage: `linear-gradient(to bottom, ${colors.from}, ${colors.to})`,
@@ -99,6 +100,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           'transition-transform duration-100 ease-in-out',
           'active:scale-95',
           'cursor-pointer',
+          disabled && 'opacity-50 cursor-not-allowed active:scale-100',
           className
         )}
         {...props}
@@ -110,9 +112,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           }}
           className={cn(
             'absolute inset-0 rounded-xl',
-            'opacity-0 group-hover:opacity-100',
-            'transition-opacity duration-200 ease-in-out',
-            'pointer-events-none'
+            'opacity-0 transition-opacity duration-200 ease-in-out',
+            'pointer-events-none',
+            !disabled && 'group-hover:opacity-100'
           )}
           aria-hidden="true"
         />

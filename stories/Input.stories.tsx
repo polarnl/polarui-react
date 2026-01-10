@@ -26,6 +26,9 @@ const meta: Meta<typeof Input> = {
       control: 'select',
       options: ['light', 'dark'],
     },
+    disabled: {
+      control: 'boolean',
+    },
   },
   parameters: {
     layout: 'centered',
@@ -65,10 +68,10 @@ export const DarkWithIcon: Story = {
   },
 }
 
-export const SearchInput: Story = {
+export const Disabled: Story = {
   args: {
     scheme: 'light',
-    placeholder: 'Search...',
-    icon: <SearchIcon />,
+    placeholder: 'Disabled input',
+    disabled: true,
   },
 }
