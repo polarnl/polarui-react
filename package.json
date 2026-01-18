@@ -1,6 +1,6 @@
 {
   "name": "@polarnl/polarui-react",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "PolarNL's Design system.",
   "type": "module",
   "main": "./dist/index.js",
@@ -57,13 +57,11 @@
   },
   "peerDependencies": {
     "react": ">=18",
-    "react-dom": ">=18"
+    "react-dom": ">=18",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.4.0"
   },
   "files": [
     "dist"
-  ],
-  "dependencies": {
-    "clsx": "^2.1.1",
-    "tailwind-merge": "^3.4.0"
-  }
+  ]
 }
