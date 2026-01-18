@@ -1,6 +1,6 @@
 {
   "name": "@polarnl/polarui-react",
-  "version": "0.0.5",
+  "version": "0.0.8",
   "description": "PolarNL's Design system.",
   "type": "module",
   "main": "./dist/index.js",
@@ -17,7 +17,8 @@
     "**/*.css"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "pnpm -s build:css && tsc",
+    "build:css": "pnpx @tailwindcss/cli -i ./src/styles.css -o ./dist/styles.css --minify",
     "prepublishOnly": "pnpm build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -57,12 +58,11 @@
   },
   "peerDependencies": {
     "react": ">=18",
-    "react-dom": ">=18"
-  },
-  "dependencies": {
+    "react-dom": ">=18",
     "clsx": "^2.1.1",
     "tailwind-merge": "^3.4.0"
   },
+  "dependencies": {},
   "files": [
     "dist"
   ]

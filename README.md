@@ -3,6 +3,7 @@
 PolarUI is a component library by PolarNL using TailwindCSS.
 
 Components:
+
 - [x] Button
 - [x] Input
 - [x] Checkbox with Label
@@ -10,10 +11,20 @@ Components:
 - [ ] Modal
 - [ ] Tabs
 - [ ] Tooltip
-and more...
+      and more...
 
 ## Installation
 
 ```bash
 npm install @polarnl/polarui-react
 ```
+
+## Usage
+
+Import the compiled CSS to get the component styles (this package ships compiled CSS in `dist/styles.css`):
+
+```js
+import "@polarnl/polarui-react/styles.css";
+```
+
+Or add the import to your global CSS entry so the styles are included in your app build.
