@@ -1,6 +1,1 @@
 @import "tailwindcss";
-
-/* Custom component styles (if needed) */
-.pressable {
-  -webkit-tap-highlight-color: transparent;
-}
