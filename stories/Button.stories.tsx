@@ -1,14 +1,19 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { FiArrowRight } from 'react-icons/fi'
-import { Button } from '../src/index.js'
+import { FiArrowRight } from 'react-icons/fi';
+import { Button } from '../src/index.js';
 
 const StarIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
     <path d="M12 2l2.8 5.67L21 8.58l-4.5 4.39 1.06 6.2L12 16.3l-5.56 2.87 1.06-6.2L3 8.58l6.2-.91L12 2z" />
   </svg>
-)
+);
 
-const meta: Meta<typeof Button> = {
+const meta = {
   title: 'Components/Button',
   component: Button,
   args: {
@@ -42,65 +47,64 @@ const meta: Meta<typeof Button> = {
   parameters: {
     layout: 'centered',
   },
-}
+};
 
-export default meta
-type Story = StoryObj<typeof Button>
+export default meta;
 
-export const Default: Story = {
+export const Default = {
   args: { color: 'blue', size: 'md' },
-}
+};
 
-export const Sky: Story = {
+export const Sky = {
   args: { color: 'sky' },
-}
+};
 
-export const Orange: Story = {
+export const Orange = {
   args: { color: 'orange' },
-}
+};
 
-export const Red: Story = {
+export const Red = {
   args: { color: 'red' },
-}
+};
 
-export const Green: Story = {
+export const Green = {
   args: { color: 'green' },
-}
+};
 
-export const Dark: Story = {
+export const Dark = {
   args: { color: 'dark' },
-}
+};
 
-export const Light: Story = {
+export const Light = {
   args: { color: 'light' },
-}
+};
 
-export const WithIconRight: Story = {
+export const WithIconRight = {
   args: {
     color: 'blue',
     icon: <StarIcon />,
     iconSide: 'right',
     children: 'Continue',
   },
-}
+};
 
-export const WithReactIconComponent: Story = {
+export const WithReactIconComponent = {
   args: {
     color: 'sky',
     icon: FiArrowRight,
     children: 'Next step',
   },
-}
+};
 
-export const Loading: Story = {
+export const Loading = {
   args: {
     color: 'blue',
     loading: true,
     children: 'Save changes',
   },
-}
+};
 
-export const AsLink: Story = {
+export const AsLink = {
   args: {
     as: 'a',
     href: 'https://ui.polarnl.org/',
@@ -109,9 +113,9 @@ export const AsLink: Story = {
     children: 'Open docs',
     color: 'sky',
   },
-}
+};
 
-export const IconOnly: Story = {
+export const IconOnly = {
   args: {
     icon: <StarIcon />,
     children: null,
@@ -119,18 +123,18 @@ export const IconOnly: Story = {
     color: 'blue',
     size: 'sm',
   },
-}
+};
 
-export const Small: Story = {
+export const Small = {
   args: { size: 'sm', children: 'Small Button' },
-}
+};
 
-export const Large: Story = {
+export const Large = {
   args: { size: 'lg', children: 'Large Button' },
-}
+};
 
-export const Disabled: Story = {
+export const Disabled = {
   args: {
     disabled: true,
   },
-}
+};

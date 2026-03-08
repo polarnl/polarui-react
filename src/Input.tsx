@@ -24,15 +24,18 @@ export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElem
   containerClassName?: string;
 }
 
-const schemeClasses: Record<InputScheme, { box: string; icon: string; input: string; focus: string }> = {
+const schemeClasses: Record<
+  InputScheme,
+  { box: string; icon: string; input: string; focus: string }
+> = {
   light: {
-    box: 'bg-white border-zinc-300 border-b-zinc-400 shadow-[0_2px_0_0_#D4D4D8] hover:border-zinc-400',
+    box: 'bg-white border-zinc-300 border-b-zinc-300 shadow-[0_3px_0_0_#D4D4D8,0_10px_18px_-16px_rgba(15,23,42,0.45)] hover:border-zinc-400',
     icon: 'text-zinc-500',
     input: 'text-zinc-900 placeholder:text-zinc-400',
     focus: 'focus-within:ring-zinc-400/35 focus-within:ring-offset-white',
   },
   dark: {
-    box: 'bg-zinc-800 border-zinc-600 border-b-zinc-700 shadow-[0_2px_0_0_#3F3F46] hover:border-zinc-500',
+    box: 'bg-zinc-800 border-zinc-600 border-b-zinc-600 shadow-[0_3px_0_0_#52525B,0_10px_18px_-16px_rgba(0,0,0,0.7)] hover:border-zinc-500',
     icon: 'text-zinc-300',
     input: 'text-zinc-100 placeholder:text-zinc-400',
     focus: 'focus-within:ring-zinc-300/35 focus-within:ring-offset-zinc-900',
@@ -83,13 +86,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       'aria-describedby': ariaDescribedBy,
       ...props
     },
-    ref
+    ref,
   ) => {
     const generatedId = React.useId();
     const inputId = id ?? `input-${generatedId}`;
     const descriptionId = description ? `${inputId}-description` : undefined;
     const errorId = error ? `${inputId}-error` : undefined;
-    const describedBy = [ariaDescribedBy, descriptionId, errorId].filter(Boolean).join(' ') || undefined;
+    const describedBy =
+      [ariaDescribedBy, descriptionId, errorId].filter(Boolean).join(' ') || undefined;
     const schemeConfig = schemeClasses[scheme];
     const sizeConfig = sizeClasses[size];
     const resolvedStartIcon = startIcon ?? icon;
@@ -115,7 +119,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             className={cn(
               'text-sm font-semibold leading-5 break-words',
               scheme === 'dark' ? 'text-zinc-100' : 'text-zinc-900',
-              disabled && 'text-zinc-500'
+              disabled && 'text-zinc-500',
             )}
           >
             {label}
@@ -124,22 +128,27 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
         <div
           className={cn(
-            'flex w-full min-w-0 items-center overflow-hidden rounded-xl border-2 border-b-4 transition-all duration-150 ease-in-out focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
+            'flex w-full min-w-0 items-center overflow-hidden rounded-xl border-2 border-b-[3px] transition-all duration-150 ease-in-out focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
             schemeConfig.box,
             schemeConfig.focus,
             sizeConfig.box,
             hasError &&
-              'border-red-400 border-b-red-500 shadow-[0_2px_0_0_#FCA5A5] hover:border-red-500 focus-within:ring-red-500/45',
+              'border-red-400 border-b-red-400 shadow-[0_3px_0_0_#FCA5A5,0_10px_18px_-16px_rgba(127,29,29,0.45)] hover:border-red-500 focus-within:ring-red-500/45',
             readOnly &&
               (scheme === 'dark'
                 ? 'bg-zinc-700/70 shadow-none hover:border-zinc-600'
                 : 'bg-zinc-100/70 shadow-none hover:border-zinc-300'),
             disabled && 'pointer-events-none cursor-not-allowed opacity-60',
-            containerClassName
+            containerClassName,
           )}
         >
           {resolvedStartIcon ? (
-            <span className={cn('inline-flex items-center justify-center', hasError ? 'text-red-500' : schemeConfig.icon)}>
+            <span
+              className={cn(
+                'inline-flex items-center justify-center',
+                hasError ? 'text-red-500' : schemeConfig.icon,
+              )}
+            >
               {renderIcon(resolvedStartIcon)}
             </span>
           ) : null}
@@ -157,13 +166,18 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               'disabled:cursor-not-allowed disabled:text-zinc-500',
               schemeConfig.input,
               sizeConfig.input,
-              inputClassName
+              inputClassName,
             )}
             {...props}
           />
 
           {endIcon ? (
-            <span className={cn('inline-flex items-center justify-center', hasError ? 'text-red-500' : schemeConfig.icon)}>
+            <span
+              className={cn(
+                'inline-flex items-center justify-center',
+                hasError ? 'text-red-500' : schemeConfig.icon,
+              )}
+            >
               {renderIcon(endIcon)}
             </span>
           ) : null}
@@ -172,7 +186,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {description ? (
           <p
             id={descriptionId}
-            className={cn('text-sm leading-5 break-words', scheme === 'dark' ? 'text-zinc-400' : 'text-zinc-600')}
+            className={cn(
+              'text-sm leading-5 break-words',
+              scheme === 'dark' ? 'text-zinc-400' : 'text-zinc-600',
+            )}
           >
             {description}
           </p>
@@ -185,7 +202,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         ) : null}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = 'Input';

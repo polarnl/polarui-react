@@ -1,4 +1,4 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from 'tailwindcss';
 
 export default {
   content: [
@@ -7,4 +7,4 @@ export default {
     './.storybook/**/*.{ts,tsx,js,jsx}',
   ],
   plugins: [],
-} satisfies Config
+} satisfies Config;

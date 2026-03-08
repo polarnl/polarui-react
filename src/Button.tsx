@@ -119,7 +119,11 @@ const defaultSpinner = (
     aria-hidden="true"
   >
     <circle className="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-    <path className="opacity-90" fill="currentColor" d="M12 2a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7V2z" />
+    <path
+      className="opacity-90"
+      fill="currentColor"
+      d="M12 2a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7V2z"
+    />
   </svg>
 );
 
@@ -149,7 +153,7 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
       style,
       ...props
     },
-    ref
+    ref,
   ) => {
     const prefersReducedMotion = useReducedMotion();
     const colorConfig = colorClasses[color];
@@ -161,15 +165,17 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
     const resolvedIconSize = iconSize ?? iconPixelSizeByButtonSize[size];
     const hasAccessibleName = Boolean(
       (props as { 'aria-label'?: string })['aria-label'] ||
-        (props as { 'aria-labelledby'?: string })['aria-labelledby'] ||
-        (props as { title?: string }).title
+      (props as { 'aria-labelledby'?: string })['aria-labelledby'] ||
+      (props as { title?: string }).title,
     );
 
     React.useEffect(() => {
       if (!isIconOnly) return;
       if (!hasAccessibleName) {
         // eslint-disable-next-line no-console
-        console.warn('Button: icon-only buttons should include aria-label, aria-labelledby, or title.');
+        console.warn(
+          'Button: icon-only buttons should include aria-label, aria-labelledby, or title.',
+        );
       }
     }, [hasAccessibleName, isIconOnly]);
 
@@ -180,7 +186,7 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
       resolvedText,
       isIconOnly ? iconOnlySizeClasses[size] : sizeClasses[size],
       isDisabled && 'pointer-events-none cursor-not-allowed opacity-50',
-      className
+      className,
     );
 
     const content = (
@@ -188,7 +194,7 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
         className={cn(
           'inline-flex items-center',
           hasLabel ? 'gap-2.5' : 'gap-0',
-          iconSide === 'right' && !loading && 'flex-row-reverse'
+          iconSide === 'right' && !loading && 'flex-row-reverse',
         )}
       >
         {loading ? (
@@ -222,11 +228,16 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
         return;
       }
 
-      (props as { onClick?: (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void }).onClick?.(event);
+      (
+        props as { onClick?: (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void }
+      ).onClick?.(event);
     };
 
     if (as === 'a') {
-      const { onClick: _userOnClick, ...anchorProps } = props as Omit<ButtonAsAnchorProps, keyof ButtonBaseProps>;
+      const { onClick: _userOnClick, ...anchorProps } = props as Omit<
+        ButtonAsAnchorProps,
+        keyof ButtonBaseProps
+      >;
 
       return (
         <motion.a
@@ -244,7 +255,10 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
       );
     }
 
-    const { onClick: _userOnClick, ...buttonProps } = props as Omit<ButtonAsButtonProps, keyof ButtonBaseProps>;
+    const { onClick: _userOnClick, ...buttonProps } = props as Omit<
+      ButtonAsButtonProps,
+      keyof ButtonBaseProps
+    >;
 
     return (
       <motion.button
@@ -260,7 +274,7 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
         {content}
       </motion.button>
     );
-  }
+  },
 );
 
 Button.displayName = 'Button';

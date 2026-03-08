@@ -1,4 +1,4 @@
-export { Button } from './Button.js'
+export { Button } from './Button.js';
 export type {
   ButtonProps,
   ButtonColor,
@@ -9,8 +9,8 @@ export type {
   ButtonIcon,
   ButtonIconComponent,
   ButtonIconComponentProps,
-} from './Button.js'
-export { Input } from './Input.js'
+} from './Button.js';
+export { Input } from './Input.js';
 export type {
   InputProps,
   InputScheme,
@@ -18,8 +18,8 @@ export type {
   InputIcon,
   InputIconComponent,
   InputIconComponentProps,
-} from './Input.js'
-export { Dropdown } from './Dropdown.js'
+} from './Input.js';
+export { Dropdown } from './Dropdown.js';
 export type {
   DropdownProps,
   DropdownOption,
@@ -28,7 +28,11 @@ export type {
   DropdownIcon,
   DropdownIconComponent,
   DropdownIconComponentProps,
-} from './Dropdown.js'
-export { CheckWithLabel } from './CheckWithLabel.js'
-export type { CheckWithLabelProps, CheckWithLabelColor, CheckWithLabelSize } from './CheckWithLabel.js'
-export { cn } from './cn.js'
+} from './Dropdown.js';
+export { CheckWithLabel } from './CheckWithLabel.js';
+export type {
+  CheckWithLabelProps,
+  CheckWithLabelColor,
+  CheckWithLabelSize,
+} from './CheckWithLabel.js';
+export { cn } from './cn.js';

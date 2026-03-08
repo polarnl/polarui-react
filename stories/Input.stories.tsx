@@ -1,8 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { FiSearch, FiUser } from 'react-icons/fi'
-import { Input } from '../src/index.js'
+import { FiSearch, FiUser } from 'react-icons/fi';
+import { Input } from '../src/index.js';
 
-const meta: Meta<typeof Input> = {
+const meta = {
   title: 'Components/Input',
   component: Input,
   args: {
@@ -28,79 +27,78 @@ const meta: Meta<typeof Input> = {
   parameters: {
     layout: 'centered',
   },
-}
+};
 
-export default meta
-type Story = StoryObj<typeof Input>
+export default meta;
 
-export const Default: Story = {
+export const Default = {
   args: {
     scheme: 'light',
   },
-}
+};
 
-export const Dark: Story = {
+export const Dark = {
   args: {
     scheme: 'dark',
     label: 'Username',
     placeholder: 'Type your username',
   },
-}
+};
 
-export const WithStartIcon: Story = {
+export const WithStartIcon = {
   args: {
     startIcon: FiSearch,
     label: 'Search',
     placeholder: 'Search docs',
   },
-}
+};
 
-export const WithEndIcon: Story = {
+export const WithEndIcon = {
   args: {
     endIcon: FiUser,
     label: 'Assignee',
     placeholder: 'Assign to user',
   },
-}
+};
 
-export const WithHelperText: Story = {
+export const WithHelperText = {
   args: {
     label: 'Project name',
     description: 'Use 3-40 characters; letters and numbers only.',
     placeholder: 'Type project name',
   },
-}
+};
 
-export const WithError: Story = {
+export const WithError = {
   args: {
     label: 'Email',
     error: 'Please enter a valid email address.',
     placeholder: 'you@example.com',
     defaultValue: 'invalid-email',
   },
-}
+};
 
-export const Large: Story = {
+export const Large = {
   args: {
     size: 'lg',
     label: 'Large input',
     placeholder: 'Larger touch target',
   },
-}
+};
 
-export const Disabled: Story = {
+export const Disabled = {
   args: {
     label: 'Disabled input',
     placeholder: 'Cannot edit',
     disabled: true,
     defaultValue: 'Disabled value',
   },
-}
+};
 
-export const ReadOnly: Story = {
+export const ReadOnly = {
   args: {
     label: 'Read-only input',
     readOnly: true,
     defaultValue: 'Immutable value',
   },
-}
+};

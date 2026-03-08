@@ -4,7 +4,10 @@ import { cn } from './cn.js';
 export type CheckWithLabelColor = 'sky' | 'orange' | 'red' | 'green' | 'blue' | 'dark' | 'light';
 export type CheckWithLabelSize = 'sm' | 'md' | 'lg';
 
-export interface CheckWithLabelProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
+export interface CheckWithLabelProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'type' | 'size'
+> {
   label?: React.ReactNode;
   description?: React.ReactNode;
   error?: React.ReactNode;
@@ -61,50 +64,51 @@ const textSizeClasses: Record<CheckWithLabelSize, string> = {
   lg: 'text-base',
 };
 
-const colorClasses: Record<CheckWithLabelColor, { checked: string; icon: string; focus: string }> = {
-  sky: {
-    checked:
-      'peer-checked:border-sky-500 peer-indeterminate:border-sky-500 peer-checked:shadow-[0_2px_0_0_#7DD3FC] peer-indeterminate:shadow-[0_2px_0_0_#7DD3FC]',
-    icon: 'peer-checked:text-sky-600 peer-indeterminate:text-sky-600',
-    focus: 'peer-focus-visible:ring-sky-500/45',
-  },
-  orange: {
-    checked:
-      'peer-checked:border-orange-500 peer-indeterminate:border-orange-500 peer-checked:shadow-[0_2px_0_0_#FDBA74] peer-indeterminate:shadow-[0_2px_0_0_#FDBA74]',
-    icon: 'peer-checked:text-orange-600 peer-indeterminate:text-orange-600',
-    focus: 'peer-focus-visible:ring-orange-500/45',
-  },
-  red: {
-    checked:
-      'peer-checked:border-red-500 peer-indeterminate:border-red-500 peer-checked:shadow-[0_2px_0_0_#FCA5A5] peer-indeterminate:shadow-[0_2px_0_0_#FCA5A5]',
-    icon: 'peer-checked:text-red-600 peer-indeterminate:text-red-600',
-    focus: 'peer-focus-visible:ring-red-500/45',
-  },
-  green: {
-    checked:
-      'peer-checked:border-emerald-500 peer-indeterminate:border-emerald-500 peer-checked:shadow-[0_2px_0_0_#86EFAC] peer-indeterminate:shadow-[0_2px_0_0_#86EFAC]',
-    icon: 'peer-checked:text-emerald-600 peer-indeterminate:text-emerald-600',
-    focus: 'peer-focus-visible:ring-emerald-500/45',
-  },
-  blue: {
-    checked:
-      'peer-checked:border-blue-500 peer-indeterminate:border-blue-500 peer-checked:shadow-[0_2px_0_0_#93C5FD] peer-indeterminate:shadow-[0_2px_0_0_#93C5FD]',
-    icon: 'peer-checked:text-blue-600 peer-indeterminate:text-blue-600',
-    focus: 'peer-focus-visible:ring-blue-500/45',
-  },
-  dark: {
-    checked:
-      'peer-checked:border-zinc-700 peer-indeterminate:border-zinc-700 peer-checked:shadow-[0_2px_0_0_#A1A1AA] peer-indeterminate:shadow-[0_2px_0_0_#A1A1AA]',
-    icon: 'peer-checked:text-zinc-800 peer-indeterminate:text-zinc-800',
-    focus: 'peer-focus-visible:ring-zinc-500/45',
-  },
-  light: {
-    checked:
-      'peer-checked:border-zinc-400 peer-indeterminate:border-zinc-400 peer-checked:shadow-[0_2px_0_0_#D4D4D8] peer-indeterminate:shadow-[0_2px_0_0_#D4D4D8]',
-    icon: 'peer-checked:text-zinc-700 peer-indeterminate:text-zinc-700',
-    focus: 'peer-focus-visible:ring-zinc-500/45',
-  },
-};
+const colorClasses: Record<CheckWithLabelColor, { checked: string; icon: string; focus: string }> =
+  {
+    sky: {
+      checked:
+        'peer-checked:border-sky-500 peer-indeterminate:border-sky-500 peer-checked:shadow-[0_2px_0_0_#7DD3FC] peer-indeterminate:shadow-[0_2px_0_0_#7DD3FC]',
+      icon: 'peer-checked:text-sky-600 peer-indeterminate:text-sky-600',
+      focus: 'peer-focus-visible:ring-sky-500/45',
+    },
+    orange: {
+      checked:
+        'peer-checked:border-orange-500 peer-indeterminate:border-orange-500 peer-checked:shadow-[0_2px_0_0_#FDBA74] peer-indeterminate:shadow-[0_2px_0_0_#FDBA74]',
+      icon: 'peer-checked:text-orange-600 peer-indeterminate:text-orange-600',
+      focus: 'peer-focus-visible:ring-orange-500/45',
+    },
+    red: {
+      checked:
+        'peer-checked:border-red-500 peer-indeterminate:border-red-500 peer-checked:shadow-[0_2px_0_0_#FCA5A5] peer-indeterminate:shadow-[0_2px_0_0_#FCA5A5]',
+      icon: 'peer-checked:text-red-600 peer-indeterminate:text-red-600',
+      focus: 'peer-focus-visible:ring-red-500/45',
+    },
+    green: {
+      checked:
+        'peer-checked:border-emerald-500 peer-indeterminate:border-emerald-500 peer-checked:shadow-[0_2px_0_0_#86EFAC] peer-indeterminate:shadow-[0_2px_0_0_#86EFAC]',
+      icon: 'peer-checked:text-emerald-600 peer-indeterminate:text-emerald-600',
+      focus: 'peer-focus-visible:ring-emerald-500/45',
+    },
+    blue: {
+      checked:
+        'peer-checked:border-blue-500 peer-indeterminate:border-blue-500 peer-checked:shadow-[0_2px_0_0_#93C5FD] peer-indeterminate:shadow-[0_2px_0_0_#93C5FD]',
+      icon: 'peer-checked:text-blue-600 peer-indeterminate:text-blue-600',
+      focus: 'peer-focus-visible:ring-blue-500/45',
+    },
+    dark: {
+      checked:
+        'peer-checked:border-zinc-700 peer-indeterminate:border-zinc-700 peer-checked:shadow-[0_2px_0_0_#A1A1AA] peer-indeterminate:shadow-[0_2px_0_0_#A1A1AA]',
+      icon: 'peer-checked:text-zinc-800 peer-indeterminate:text-zinc-800',
+      focus: 'peer-focus-visible:ring-zinc-500/45',
+    },
+    light: {
+      checked:
+        'peer-checked:border-zinc-400 peer-indeterminate:border-zinc-400 peer-checked:shadow-[0_2px_0_0_#D4D4D8] peer-indeterminate:shadow-[0_2px_0_0_#D4D4D8]',
+      icon: 'peer-checked:text-zinc-700 peer-indeterminate:text-zinc-700',
+      focus: 'peer-focus-visible:ring-zinc-500/45',
+    },
+  };
 
 export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelProps>(
   (
@@ -124,7 +128,7 @@ export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelP
       'aria-describedby': ariaDescribedBy,
       ...props
     },
-    ref
+    ref,
   ) => {
     const inputRef = React.useRef<HTMLInputElement>(null);
     const generatedId = React.useId();
@@ -132,7 +136,8 @@ export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelP
     const hasError = Boolean(error);
     const descriptionId = description ? `${inputId}-description` : undefined;
     const errorId = hasError ? `${inputId}-error` : undefined;
-    const describedBy = [ariaDescribedBy, descriptionId, errorId].filter(Boolean).join(' ') || undefined;
+    const describedBy =
+      [ariaDescribedBy, descriptionId, errorId].filter(Boolean).join(' ') || undefined;
 
     React.useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
 
@@ -159,7 +164,7 @@ export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelP
         className={cn(
           'group inline-flex items-start gap-3 align-top',
           disabled ? 'pointer-events-none cursor-not-allowed opacity-60' : 'cursor-pointer',
-          className
+          className,
         )}
         htmlFor={inputId}
       >
@@ -184,7 +189,7 @@ export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelP
             tone.icon,
             tone.focus,
             hasError &&
-              'border-red-300 group-hover:border-red-400 peer-checked:border-red-500 peer-checked:shadow-[0_2px_0_0_#FCA5A5] peer-indeterminate:border-red-500 peer-indeterminate:shadow-[0_2px_0_0_#FCA5A5] peer-checked:text-red-600 peer-indeterminate:text-red-600 peer-focus-visible:ring-red-500/45'
+              'border-red-300 group-hover:border-red-400 peer-checked:border-red-500 peer-checked:shadow-[0_2px_0_0_#FCA5A5] peer-indeterminate:border-red-500 peer-indeterminate:shadow-[0_2px_0_0_#FCA5A5] peer-checked:text-red-600 peer-indeterminate:text-red-600 peer-focus-visible:ring-red-500/45',
           )}
           aria-hidden="true"
         >
@@ -192,7 +197,7 @@ export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelP
             className={cn(
               'pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-150 ease-in-out',
               checkedState && !indeterminate ? 'scale-100 opacity-100' : 'scale-75 opacity-0',
-              iconSizeClasses[controlSize]
+              iconSizeClasses[controlSize],
             )}
           >
             <CheckIcon className="size-full" />
@@ -201,7 +206,7 @@ export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelP
             className={cn(
               'pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-150 ease-in-out',
               indeterminate ? 'scale-100 opacity-100' : 'scale-75 opacity-0',
-              iconSizeClasses[controlSize]
+              iconSizeClasses[controlSize],
             )}
           >
             <IndeterminateIcon className="size-full" />
@@ -212,7 +217,7 @@ export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelP
             className={cn(
               'leading-5 font-semibold text-zinc-900',
               textSizeClasses[controlSize],
-              disabled && 'text-zinc-500'
+              disabled && 'text-zinc-500',
             )}
           >
             {label}
@@ -230,7 +235,7 @@ export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelP
         </span>
       </label>
     );
-  }
+  },
 );
 
 CheckWithLabel.displayName = 'CheckWithLabel';

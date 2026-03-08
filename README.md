@@ -24,7 +24,7 @@ npm install @polarnl/polarui-react
 Import the compiled CSS to get the component styles (this package ships compiled CSS in `dist/styles.css`):
 
 ```js
-import "@polarnl/polarui-react/styles.css";
+import '@polarnl/polarui-react/styles.css';
 ```
 
 Or add the import to your global CSS entry so the styles are included in your app build.

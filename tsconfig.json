@@ -35,15 +35,8 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "stories",
-    ".storybook",
-    "tailwind.config.ts",
-    "vitest.config.ts"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["stories", ".storybook", "tailwind.config.ts", "vitest.config.ts"]
 }
