@@ -108,12 +108,12 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     };
 
     return (
-      <div className={cn('inline-flex w-full min-w-0 flex-col gap-1.5', className)}>
+      <div className={cn('inline-flex w-80 max-w-full min-w-0 flex-col gap-1.5', className)}>
         {label ? (
           <label
             htmlFor={inputId}
             className={cn(
-              'text-sm font-semibold leading-5',
+              'text-sm font-semibold leading-5 break-words',
               scheme === 'dark' ? 'text-zinc-100' : 'text-zinc-900',
               disabled && 'text-zinc-500'
             )}
@@ -172,14 +172,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {description ? (
           <p
             id={descriptionId}
-            className={cn('text-sm leading-5', scheme === 'dark' ? 'text-zinc-400' : 'text-zinc-600')}
+            className={cn('text-sm leading-5 break-words', scheme === 'dark' ? 'text-zinc-400' : 'text-zinc-600')}
           >
             {description}
           </p>
         ) : null}
 
         {error ? (
-          <p id={errorId} className="text-sm font-medium leading-5 text-red-600">
+          <p id={errorId} className="text-sm font-medium leading-5 text-red-600 break-words">
             {error}
           </p>
         ) : null}
