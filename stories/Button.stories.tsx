@@ -2,14 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Button } from '../src/index.js'
 
 const StarIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-  </svg>
-)
-
-const ArrowIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M5 12h14M12 5l7 7-7 7" />
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2l2.8 5.67L21 8.58l-4.5 4.39 1.06 6.2L12 16.3l-5.56 2.87 1.06-6.2L3 8.58l6.2-.91L12 2z" />
   </svg>
 )
 
@@ -23,6 +17,10 @@ const meta: Meta<typeof Button> = {
     color: {
       control: 'select',
       options: ['sky', 'orange', 'red', 'green', 'blue', 'dark', 'light'],
+    },
+    size: {
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
     },
     textColor: {
       control: 'select',
@@ -42,7 +40,11 @@ export default meta
 type Story = StoryObj<typeof Button>
 
 export const Default: Story = {
-  args: { textColor: "black" }
+  args: { color: 'blue', size: 'md' },
+}
+
+export const Sky: Story = {
+  args: { color: 'sky' },
 }
 
 export const Orange: Story = {
@@ -57,10 +59,6 @@ export const Green: Story = {
   args: { color: 'green' },
 }
 
-export const Blue: Story = {
-  args: { color: 'blue' },
-}
-
 export const Dark: Story = {
   args: { color: 'dark' },
 }
@@ -69,20 +67,21 @@ export const Light: Story = {
   args: { color: 'light' },
 }
 
-export const WithIconLeft: Story = {
+export const WithIconRight: Story = {
   args: {
-    children: 'Star',
+    color: 'blue',
     icon: <StarIcon />,
-    iconSide: 'left',
+    iconSide: 'right',
+    children: 'Continue',
   },
 }
 
-export const WithIconRight: Story = {
-  args: {
-    children: 'Continue',
-    icon: <ArrowIcon />,
-    iconSide: 'right',
-  },
+export const Small: Story = {
+  args: { size: 'sm', children: 'Small Button' },
+}
+
+export const Large: Story = {
+  args: { size: 'lg', children: 'Large Button' },
 }
 
 export const Disabled: Story = {

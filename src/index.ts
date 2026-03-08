@@ -1,5 +1,5 @@
 export { Button } from './Button.js'
-export type { ButtonProps, ButtonColor, ButtonTextColor, ButtonIconSide } from './Button.js'
+export type { ButtonProps, ButtonColor, ButtonTextColor, ButtonIconSide, ButtonSize } from './Button.js'
 export { Input } from './Input.js'
 export type { InputProps, InputScheme } from './Input.js'
 export { CheckWithLabel } from './CheckWithLabel.js'
