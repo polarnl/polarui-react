@@ -1,32 +1,27 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { FiSearch, FiUser } from 'react-icons/fi'
 import { Input } from '../src/index.js'
-
-const SearchIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="11" cy="11" r="8" />
-    <path d="m21 21-4.3-4.3" />
-  </svg>
-)
-
-const UserIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-    <circle cx="12" cy="7" r="4" />
-  </svg>
-)
 
 const meta: Meta<typeof Input> = {
   title: 'Components/Input',
   component: Input,
   args: {
-    placeholder: 'Standard input',
+    placeholder: 'Type something...',
+    label: 'Email',
   },
   argTypes: {
     scheme: {
       control: 'select',
       options: ['light', 'dark'],
     },
+    size: {
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+    },
     disabled: {
+      control: 'boolean',
+    },
+    readOnly: {
       control: 'boolean',
     },
   },
@@ -38,40 +33,74 @@ const meta: Meta<typeof Input> = {
 export default meta
 type Story = StoryObj<typeof Input>
 
-export const Light: Story = {
+export const Default: Story = {
   args: {
     scheme: 'light',
-    placeholder: 'Standard input',
   },
 }
 
 export const Dark: Story = {
   args: {
     scheme: 'dark',
-    placeholder: 'Standard input',
+    label: 'Username',
+    placeholder: 'Type your username',
   },
 }
 
-export const LightWithIcon: Story = {
+export const WithStartIcon: Story = {
   args: {
-    scheme: 'light',
-    placeholder: 'Input w/ icon',
-    icon: <UserIcon />,
+    startIcon: FiSearch,
+    label: 'Search',
+    placeholder: 'Search docs',
   },
 }
 
-export const DarkWithIcon: Story = {
+export const WithEndIcon: Story = {
   args: {
-    scheme: 'dark',
-    placeholder: 'Input w/ icon',
-    icon: <UserIcon />,
+    endIcon: FiUser,
+    label: 'Assignee',
+    placeholder: 'Assign to user',
+  },
+}
+
+export const WithHelperText: Story = {
+  args: {
+    label: 'Project name',
+    description: 'Use 3-40 characters; letters and numbers only.',
+    placeholder: 'Type project name',
+  },
+}
+
+export const WithError: Story = {
+  args: {
+    label: 'Email',
+    error: 'Please enter a valid email address.',
+    placeholder: 'you@example.com',
+    defaultValue: 'invalid-email',
+  },
+}
+
+export const Large: Story = {
+  args: {
+    size: 'lg',
+    label: 'Large input',
+    placeholder: 'Larger touch target',
   },
 }
 
 export const Disabled: Story = {
   args: {
-    scheme: 'light',
-    placeholder: 'Disabled input',
+    label: 'Disabled input',
+    placeholder: 'Cannot edit',
     disabled: true,
+    defaultValue: 'Disabled value',
+  },
+}
+
+export const ReadOnly: Story = {
+  args: {
+    label: 'Read-only input',
+    readOnly: true,
+    defaultValue: 'Immutable value',
   },
 }

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { FiArrowRight } from 'react-icons/fi'
 import { Button } from '../src/index.js'
 
 const StarIcon = () => (
@@ -80,6 +81,14 @@ export const WithIconRight: Story = {
     icon: <StarIcon />,
     iconSide: 'right',
     children: 'Continue',
+  },
+}
+
+export const WithReactIconComponent: Story = {
+  args: {
+    color: 'sky',
+    icon: FiArrowRight,
+    children: 'Next step',
   },
 }
 

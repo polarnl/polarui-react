@@ -9,11 +9,20 @@ export type ButtonTextColor = 'white' | 'black';
 export type ButtonIconSide = 'left' | 'right';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 export type ButtonElement = 'button' | 'a';
+export type ButtonIconComponentProps = {
+  className?: string;
+  size?: string | number;
+  'aria-hidden'?: boolean;
+};
+export type ButtonIconComponent = React.ComponentType<ButtonIconComponentProps>;
+export type ButtonIcon = React.ReactNode | ButtonIconComponent;
 
 interface ButtonBaseProps {
   color?: ButtonColor;
   textColor?: ButtonTextColor;
-  icon?: React.ReactNode;
+  icon?: ButtonIcon;
+  iconSize?: number;
+  iconClassName?: string;
   iconSide?: ButtonIconSide;
   size?: ButtonSize;
   loading?: boolean;
@@ -90,6 +99,12 @@ const iconOnlySizeClasses: Record<ButtonSize, string> = {
   lg: 'h-12 w-12 p-0',
 };
 
+const iconPixelSizeByButtonSize: Record<ButtonSize, number> = {
+  sm: 16,
+  md: 18,
+  lg: 20,
+};
+
 const textColorClasses: Record<ButtonTextColor, string> = {
   white: 'text-white',
   black: 'text-zinc-900',
@@ -108,6 +123,12 @@ const defaultSpinner = (
   </svg>
 );
 
+function isIconComponent(value: ButtonIcon): value is ButtonIconComponent {
+  if (typeof value === 'function') return true;
+  if (typeof value === 'object' && value !== null && '$$typeof' in value) return true;
+  return false;
+}
+
 export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
   (
     {
@@ -116,6 +137,8 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
       color = 'blue',
       textColor,
       icon,
+      iconSize,
+      iconClassName,
       iconSide = 'left',
       size = 'md',
       loading = false,
@@ -135,6 +158,7 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
     const labelContent = loading ? loadingLabel : children;
     const hasLabel = labelContent !== undefined && labelContent !== null && labelContent !== '';
     const isIconOnly = !hasLabel && Boolean(icon);
+    const resolvedIconSize = iconSize ?? iconPixelSizeByButtonSize[size];
     const hasAccessibleName = Boolean(
       (props as { 'aria-label'?: string })['aria-label'] ||
         (props as { 'aria-labelledby'?: string })['aria-labelledby'] ||
@@ -167,7 +191,21 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
           iconSide === 'right' && !loading && 'flex-row-reverse'
         )}
       >
-        {loading ? <span className="shrink-0">{spinner}</span> : icon ? <span className="shrink-0">{icon}</span> : null}
+        {loading ? (
+          <span className="shrink-0">{spinner}</span>
+        ) : icon ? (
+          isIconComponent(icon) ? (
+            <span className="shrink-0">
+              {React.createElement(icon, {
+                className: cn('shrink-0', iconClassName),
+                size: resolvedIconSize,
+                'aria-hidden': true,
+              })}
+            </span>
+          ) : (
+            <span className={cn('shrink-0', iconClassName)}>{icon}</span>
+          )
+        ) : null}
         {hasLabel ? <span>{labelContent}</span> : null}
       </span>
     );
