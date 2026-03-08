@@ -14,6 +14,10 @@ const meta: Meta<typeof Button> = {
     children: 'Button',
   },
   argTypes: {
+    as: {
+      control: 'select',
+      options: ['button', 'a'],
+    },
     color: {
       control: 'select',
       options: ['sky', 'orange', 'red', 'green', 'blue', 'dark', 'light'],
@@ -29,6 +33,9 @@ const meta: Meta<typeof Button> = {
     iconSide: {
       control: 'select',
       options: ['left', 'right'],
+    },
+    loading: {
+      control: 'boolean',
     },
   },
   parameters: {
@@ -73,6 +80,35 @@ export const WithIconRight: Story = {
     icon: <StarIcon />,
     iconSide: 'right',
     children: 'Continue',
+  },
+}
+
+export const Loading: Story = {
+  args: {
+    color: 'blue',
+    loading: true,
+    children: 'Save changes',
+  },
+}
+
+export const AsLink: Story = {
+  args: {
+    as: 'a',
+    href: 'https://ui.polarnl.org/',
+    target: '_blank',
+    rel: 'noreferrer',
+    children: 'Open docs',
+    color: 'sky',
+  },
+}
+
+export const IconOnly: Story = {
+  args: {
+    icon: <StarIcon />,
+    children: null,
+    'aria-label': 'Favorite',
+    color: 'blue',
+    size: 'sm',
   },
 }
 
