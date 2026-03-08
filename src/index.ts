@@ -3,5 +3,5 @@ export type { ButtonProps, ButtonColor, ButtonTextColor, ButtonIconSide, ButtonS
 export { Input } from './Input.js'
 export type { InputProps, InputScheme } from './Input.js'
 export { CheckWithLabel } from './CheckWithLabel.js'
-export type { CheckWithLabelProps } from './CheckWithLabel.js'
+export type { CheckWithLabelProps, CheckWithLabelColor, CheckWithLabelSize } from './CheckWithLabel.js'
 export { cn } from './cn.js'
