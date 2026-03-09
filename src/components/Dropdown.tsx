@@ -1,60 +1,16 @@
 import React from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { cn } from './cn.js';
-import {
-  type ColorStep,
-  type PaletteTone,
-  shiftColorStep,
-  toneStepAlphaClass,
-  toneStepClass,
-} from './color-system.js';
-
-export type DropdownVariant = 'light' | 'dark';
-export type DropdownSize = 'sm' | 'md' | 'lg';
-export type DropdownIconComponentProps = {
-  className?: string;
-  size?: string | number;
-  'aria-hidden'?: boolean;
-};
-export type DropdownIconComponent = React.ComponentType<DropdownIconComponentProps>;
-export type DropdownIcon = React.ReactNode | DropdownIconComponent;
-
-export interface DropdownOption {
-  value: string;
-  label: React.ReactNode;
-  description?: React.ReactNode;
-  disabled?: boolean;
-  icon?: DropdownIcon;
-}
-
-export interface DropdownProps {
-  id?: string;
-  options: DropdownOption[];
-  value?: string;
-  defaultValue?: string;
-  onValueChange?: (value: string, option: DropdownOption) => void;
-  placeholder?: React.ReactNode;
-  label?: React.ReactNode;
-  description?: React.ReactNode;
-  error?: React.ReactNode;
-  invalid?: boolean;
-  variant?: DropdownVariant;
-  tone?: PaletteTone;
-  toneStep?: ColorStep;
-  size?: DropdownSize;
-  disabled?: boolean;
-  required?: boolean;
-  name?: string;
-  noOptionsMessage?: React.ReactNode;
-  chevronIcon?: DropdownIcon;
-  selectedIcon?: DropdownIcon;
-  hideSelectedIcon?: boolean;
-  listMinWidth?: number | string;
-  className?: string;
-  containerClassName?: string;
-  triggerClassName?: string;
-  listClassName?: string;
-}
+import { isIconComponent as isUiIconComponent } from '../types/icon.js';
+import type {
+  DropdownIcon,
+  DropdownIconComponent,
+  DropdownOption,
+  DropdownProps,
+  DropdownSize,
+  DropdownVariant,
+} from '../types/dropdown.js';
+import { cn } from '../utils/cn.js';
+import { shiftColorStep, toneStepAlphaClass, toneStepClass } from '../tokens/color.js';
 
 const schemeClasses: Record<
   DropdownVariant,
@@ -62,14 +18,14 @@ const schemeClasses: Record<
 > = {
   light: {
     trigger:
-      'bg-white border-zinc-300 border-b-zinc-300 text-zinc-900 shadow-[0_3px_0_0_#D4D4D8,0_10px_18px_-16px_rgba(15,23,42,0.45)]',
+      'bg-white border-zinc-300 text-zinc-900 shadow-[inset_0_-4px_0_0_#D4D4D8,0_10px_18px_-16px_rgba(15,23,42,0.45)]',
     list: 'bg-white border-zinc-300 shadow-[0_12px_28px_-16px_rgba(15,23,42,0.4)]',
     option: 'text-zinc-900 hover:bg-zinc-100',
     focus: 'focus-visible:ring-offset-white',
   },
   dark: {
     trigger:
-      'bg-zinc-800 border-zinc-600 border-b-zinc-600 text-zinc-100 shadow-[0_3px_0_0_#52525B,0_10px_18px_-16px_rgba(0,0,0,0.7)]',
+      'bg-zinc-800 border-zinc-600 text-zinc-100 shadow-[inset_0_-4px_0_0_#52525B,0_10px_18px_-16px_rgba(0,0,0,0.7)]',
     list: 'bg-zinc-800 border-zinc-600 shadow-[0_14px_30px_-16px_rgba(0,0,0,0.75)]',
     option: 'text-zinc-100 hover:bg-zinc-700',
     focus: 'focus-visible:ring-offset-zinc-900',
@@ -111,12 +67,6 @@ function getFirstEnabledIndex(options: DropdownOption[]): number {
   return options.findIndex((option) => !option.disabled);
 }
 
-function isIconComponent(value: DropdownIcon): value is DropdownIconComponent {
-  if (typeof value === 'function') return true;
-  if (typeof value === 'object' && value !== null && '$$typeof' in value) return true;
-  return false;
-}
-
 const DefaultChevron: DropdownIconComponent = ({ className }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -154,7 +104,7 @@ const DefaultCheck: DropdownIconComponent = ({ className }) => (
 );
 
 function renderIcon(icon: DropdownIcon, className: string, size = 16): React.ReactNode {
-  if (isIconComponent(icon)) {
+  if (isUiIconComponent(icon)) {
     return React.createElement(icon, { className, size, 'aria-hidden': true });
   }
 
@@ -367,14 +317,14 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
             aria-invalid={hasError || undefined}
             aria-describedby={describedBy}
             className={cn(
-              'min-w-0 overflow-hidden rounded-xl border-2 border-b-[3px] transition-all duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60 flex w-full items-center justify-between text-left font-medium',
+              'min-w-0 rounded-xl border-2 bg-clip-padding transition-all duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60 flex w-full items-center justify-between text-left font-medium',
               schemeConfig.trigger,
               schemeConfig.focus,
               sizeConfig.trigger,
               focusRingClass,
               hoverBorderClass,
               hasError &&
-                'border-red-400 border-b-red-400 shadow-[0_3px_0_0_#FCA5A5,0_10px_18px_-16px_rgba(127,29,29,0.45)] hover:border-red-500 focus-visible:ring-red-500/45',
+                'border-red-400 shadow-[inset_0_-4px_0_0_#FCA5A5,0_10px_18px_-16px_rgba(127,29,29,0.45)] hover:border-red-500 focus-visible:ring-red-500/45',
               triggerClassName,
             )}
             onClick={() => setOpen((prev) => !prev)}
@@ -382,7 +332,7 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
           >
             <span
               className={cn(
-                'truncate',
+                'relative -translate-y-0.5 truncate',
                 !selectedOption && (resolvedVariant === 'dark' ? 'text-zinc-400' : 'text-zinc-500'),
               )}
             >
@@ -390,7 +340,7 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
             </span>
             <span
               className={cn(
-                'ml-3 shrink-0 transition-transform duration-150 ease-in-out',
+                'relative -translate-y-0.5 ml-3 shrink-0 transition-transform duration-150 ease-in-out',
                 open && 'rotate-180',
                 resolvedVariant === 'dark' ? 'text-zinc-300' : 'text-zinc-500',
               )}

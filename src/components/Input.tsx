@@ -1,51 +1,21 @@
 import React from 'react';
-import { cn } from './cn.js';
-import {
-  type ColorStep,
-  type PaletteTone,
-  shiftColorStep,
-  toneStepAlphaClass,
-  toneStepClass,
-} from './color-system.js';
-
-export type InputVariant = 'light' | 'dark';
-export type InputSize = 'sm' | 'md' | 'lg';
-export type InputIconComponentProps = {
-  className?: string;
-  size?: string | number;
-  'aria-hidden'?: boolean;
-};
-export type InputIconComponent = React.ComponentType<InputIconComponentProps>;
-export type InputIcon = React.ReactNode | InputIconComponent;
-
-export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
-  variant?: InputVariant;
-  tone?: PaletteTone;
-  toneStep?: ColorStep;
-  size?: InputSize;
-  label?: React.ReactNode;
-  description?: React.ReactNode;
-  error?: React.ReactNode;
-  invalid?: boolean;
-  icon?: InputIcon;
-  startIcon?: InputIcon;
-  endIcon?: InputIcon;
-  inputClassName?: string;
-  containerClassName?: string;
-}
+import { isIconComponent as isUiIconComponent } from '../types/icon.js';
+import type { InputIcon, InputProps, InputSize, InputVariant } from '../types/input.js';
+import { cn } from '../utils/cn.js';
+import { shiftColorStep, toneStepAlphaClass, toneStepClass } from '../tokens/color.js';
 
 const schemeClasses: Record<
   InputVariant,
   { box: string; icon: string; input: string; focus: string }
 > = {
   light: {
-    box: 'bg-white border-zinc-300 border-b-zinc-300 shadow-[0_3px_0_0_#D4D4D8,0_10px_18px_-16px_rgba(15,23,42,0.45)]',
+    box: 'bg-white border-zinc-300 shadow-[inset_0_-4px_0_0_#D4D4D8,0_10px_18px_-16px_rgba(15,23,42,0.45)]',
     icon: 'text-zinc-500',
     input: 'text-zinc-900 placeholder:text-zinc-400',
     focus: 'focus-within:ring-offset-white',
   },
   dark: {
-    box: 'bg-zinc-800 border-zinc-600 border-b-zinc-600 shadow-[0_3px_0_0_#52525B,0_10px_18px_-16px_rgba(0,0,0,0.7)]',
+    box: 'bg-zinc-800 border-zinc-600 shadow-[inset_0_-4px_0_0_#52525B,0_10px_18px_-16px_rgba(0,0,0,0.7)]',
     icon: 'text-zinc-300',
     input: 'text-zinc-100 placeholder:text-zinc-400',
     focus: 'focus-within:ring-offset-zinc-900',
@@ -69,12 +39,6 @@ const sizeClasses: Record<InputSize, { box: string; icon: string; input: string 
     input: 'text-base',
   },
 };
-
-function isIconComponent(value: InputIcon): value is InputIconComponent {
-  if (typeof value === 'function') return true;
-  if (typeof value === 'object' && value !== null && '$$typeof' in value) return true;
-  return false;
-}
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
@@ -121,7 +85,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     const renderIcon = (iconValue: InputIcon | undefined) => {
       if (!iconValue) return null;
-      if (isIconComponent(iconValue)) {
+      if (isUiIconComponent(iconValue)) {
         return React.createElement(iconValue, {
           className: cn('shrink-0', sizeConfig.icon),
           'aria-hidden': true,
@@ -148,14 +112,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
         <div
           className={cn(
-            'min-w-0 overflow-hidden rounded-xl border-2 border-b-[3px] transition-all duration-150 ease-in-out focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 flex w-full items-center',
+            'min-w-0 rounded-xl border-2 bg-clip-padding transition-all duration-150 ease-in-out focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 flex w-full items-center',
             schemeConfig.box,
             schemeConfig.focus,
             sizeConfig.box,
             focusRingClass,
             hoverBorderClass,
             hasError &&
-              'border-red-400 border-b-red-400 shadow-[0_3px_0_0_#FCA5A5,0_10px_18px_-16px_rgba(127,29,29,0.45)] hover:border-red-500 focus-within:ring-red-500/45',
+              'border-red-400 shadow-[inset_0_-4px_0_0_#FCA5A5,0_10px_18px_-16px_rgba(127,29,29,0.45)] hover:border-red-500 focus-within:ring-red-500/45',
             readOnly &&
               (resolvedVariant === 'dark'
                 ? 'bg-zinc-700/70 shadow-none hover:border-zinc-600'
@@ -167,7 +131,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {resolvedStartIcon ? (
             <span
               className={cn(
-                'inline-flex items-center justify-center',
+                'relative -translate-y-0.5 inline-flex items-center justify-center',
                 hasError ? 'text-red-500' : schemeConfig.icon,
               )}
             >
@@ -184,7 +148,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             aria-invalid={hasError || undefined}
             aria-describedby={describedBy}
             className={cn(
-              'min-w-0 flex-1 border-none bg-transparent font-medium leading-5 outline-none',
+              'relative -translate-y-0.5 min-w-0 flex-1 border-none bg-transparent font-medium leading-5 outline-none',
               'disabled:cursor-not-allowed disabled:text-zinc-500',
               schemeConfig.input,
               sizeConfig.input,
@@ -196,7 +160,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {endIcon ? (
             <span
               className={cn(
-                'inline-flex items-center justify-center',
+                'relative -translate-y-0.5 inline-flex items-center justify-center',
                 hasError ? 'text-red-500' : schemeConfig.icon,
               )}
             >

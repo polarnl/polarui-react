@@ -1,6 +1,6 @@
-export const COLOR_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950] as const;
+import type { ColorStep, PaletteTone } from '../types/color.js';
 
-export type ColorStep = (typeof COLOR_STEPS)[number];
+export const COLOR_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950] as const;
 
 export const PALETTE_TONES = [
   'red',
@@ -26,8 +26,6 @@ export const PALETTE_TONES = [
   'neutral',
   'stone',
 ] as const;
-
-export type PaletteTone = (typeof PALETTE_TONES)[number];
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));

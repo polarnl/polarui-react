@@ -1,29 +1,7 @@
 import React from 'react';
-import { cn } from './cn.js';
-import {
-  type ColorStep,
-  type PaletteTone,
-  shiftColorStep,
-  toneStepAlphaClass,
-  toneStepClass,
-} from './color-system.js';
-
-export type CheckWithLabelTone = PaletteTone;
-export type CheckWithLabelSize = 'sm' | 'md' | 'lg';
-
-export interface CheckWithLabelProps extends Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  'type' | 'size'
-> {
-  label?: React.ReactNode;
-  description?: React.ReactNode;
-  error?: React.ReactNode;
-  invalid?: boolean;
-  tone?: CheckWithLabelTone;
-  toneStep?: ColorStep;
-  size?: CheckWithLabelSize;
-  indeterminate?: boolean;
-}
+import { cn } from '../utils/cn.js';
+import { shiftColorStep, toneStepAlphaClass, toneStepClass } from '../tokens/color.js';
+import type { CheckboxProps, CheckboxSize } from '../types/checkbox.js';
 
 const CheckIcon = ({ className }: { className?: string }) => (
   <svg
@@ -55,25 +33,25 @@ const IndeterminateIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const sizeClasses: Record<CheckWithLabelSize, string> = {
-  sm: 'size-4 rounded-md',
-  md: 'size-5 rounded-md',
-  lg: 'size-6 rounded-lg',
+const sizeClasses: Record<CheckboxSize, string> = {
+  sm: 'size-4 aspect-square rounded-md',
+  md: 'size-5 aspect-square rounded-md',
+  lg: 'size-6 aspect-square rounded-md',
 };
 
-const iconSizeClasses: Record<CheckWithLabelSize, string> = {
+const iconSizeClasses: Record<CheckboxSize, string> = {
   sm: 'size-3',
   md: 'size-3.5',
   lg: 'size-4',
 };
 
-const textSizeClasses: Record<CheckWithLabelSize, string> = {
+const textSizeClasses: Record<CheckboxSize, string> = {
   sm: 'text-sm',
   md: 'text-[15px]',
   lg: 'text-base',
 };
 
-export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelProps>(
+export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
   (
     {
       className,
@@ -174,8 +152,8 @@ export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelP
         />
         <span
           className={cn(
-            'relative mt-0.5 inline-flex shrink-0 items-center justify-center border-2 border-zinc-300 bg-white text-transparent shadow-[0_2px_0_0_#D4D4D8] transition-all duration-150 ease-in-out group-hover:border-zinc-400 group-hover:bg-zinc-50 peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-white peer-active:translate-y-px peer-active:shadow-none',
-            'peer-checked:shadow-[0_2px_0_0] peer-indeterminate:shadow-[0_2px_0_0]',
+            'relative mt-0.5 inline-flex shrink-0 items-center justify-center border-2 border-zinc-300 bg-white bg-clip-padding text-transparent shadow-[inset_0_-2px_0_0_#D4D4D8] transition-all duration-150 ease-in-out group-hover:border-zinc-400 group-hover:bg-zinc-50 peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-white peer-active:translate-y-px peer-active:shadow-none',
+            'peer-checked:shadow-[inset_0_-2px_0_0] peer-indeterminate:shadow-[inset_0_-2px_0_0]',
             checkedBorderClass,
             indeterminateBorderClass,
             checkedIconClass,
@@ -185,13 +163,13 @@ export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelP
             focusRingClass,
             sizeClasses[resolvedSize],
             hasError &&
-              'border-red-300 group-hover:border-red-400 peer-checked:border-red-500 peer-checked:shadow-[0_2px_0_0_#FCA5A5] peer-indeterminate:border-red-500 peer-indeterminate:shadow-[0_2px_0_0_#FCA5A5] peer-checked:text-red-600 peer-indeterminate:text-red-600 peer-focus-visible:ring-red-500/45',
+              'border-red-300 group-hover:border-red-400 peer-checked:border-red-500 peer-checked:shadow-[inset_0_-2px_0_0_#FCA5A5] peer-indeterminate:border-red-500 peer-indeterminate:shadow-[inset_0_-2px_0_0_#FCA5A5] peer-checked:text-red-600 peer-indeterminate:text-red-600 peer-focus-visible:ring-red-500/45',
           )}
           aria-hidden="true"
         >
           <span
             className={cn(
-              'pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-150 ease-in-out',
+              'pointer-events-none absolute left-1/2 top-[calc(50%-1px)] -translate-x-1/2 -translate-y-1/2 transition-all duration-150 ease-in-out',
               checkedState && !indeterminate ? 'scale-100 opacity-100' : 'scale-75 opacity-0',
               iconSizeClasses[resolvedSize],
             )}
@@ -200,7 +178,7 @@ export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelP
           </span>
           <span
             className={cn(
-              'pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-150 ease-in-out',
+              'pointer-events-none absolute left-1/2 top-[calc(50%-1px)] -translate-x-1/2 -translate-y-1/2 transition-all duration-150 ease-in-out',
               indeterminate ? 'scale-100 opacity-100' : 'scale-75 opacity-0',
               iconSizeClasses[resolvedSize],
             )}
@@ -234,4 +212,4 @@ export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelP
   },
 );
 
-CheckWithLabel.displayName = 'CheckWithLabel';
+Checkbox.displayName = 'Checkbox';

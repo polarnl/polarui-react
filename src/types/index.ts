@@ -1,4 +1,6 @@
-export { Button, Checkbox, Dropdown, Input } from './components/index.js';
+export type { UiIcon, UiIconComponent, UiIconComponentProps } from './icon.js';
+export { isIconComponent } from './icon.js';
+export type { ColorStep, PaletteTone } from './color.js';
 export type {
   ButtonAsAnchorProps,
   ButtonAsButtonProps,
@@ -12,9 +14,9 @@ export type {
   ButtonSize,
   ButtonTextColor,
   ButtonTone,
-  CheckboxProps,
-  CheckboxSize,
-  CheckboxTone,
+} from './button.js';
+export type { CheckboxProps, CheckboxSize, CheckboxTone } from './checkbox.js';
+export type {
   DropdownIcon,
   DropdownIconComponent,
   DropdownIconComponentProps,
@@ -22,25 +24,12 @@ export type {
   DropdownProps,
   DropdownSize,
   DropdownVariant,
+} from './dropdown.js';
+export type {
   InputIcon,
   InputIconComponent,
   InputIconComponentProps,
   InputProps,
   InputSize,
   InputVariant,
-  UiIcon,
-  UiIconComponent,
-  UiIconComponentProps,
-  ColorStep,
-  PaletteTone,
-} from './types/index.js';
-export {
-  COLOR_STEPS,
-  PALETTE_TONES,
-  getDefaultOnToneText,
-  shiftColorStep,
-  toneStepAlphaClass,
-  toneStepClass,
-} from './tokens/index.js';
-export { isIconComponent } from './types/index.js';
-export { cn } from './utils/index.js';
+} from './input.js';

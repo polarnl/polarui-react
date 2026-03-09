@@ -1,59 +1,24 @@
 'use client';
 
 import React from 'react';
-import { motion, type HTMLMotionProps, useReducedMotion } from 'framer-motion';
-import { cn } from './cn.js';
+import { motion, useReducedMotion } from 'framer-motion';
+import type { HTMLMotionProps } from 'framer-motion';
+import { isIconComponent as isUiIconComponent } from '../types/icon.js';
+import type {
+  ButtonAsAnchorProps,
+  ButtonAsButtonProps,
+  ButtonBaseProps,
+  ButtonProps,
+  ButtonSize,
+  ButtonTextColor,
+} from '../types/button.js';
+import { cn } from '../utils/cn.js';
 import {
   getDefaultOnToneText,
-  type ColorStep,
-  type PaletteTone,
   shiftColorStep,
   toneStepAlphaClass,
   toneStepClass,
-} from './color-system.js';
-
-export type ButtonTone = PaletteTone;
-export type ButtonTextColor = 'white' | 'black';
-export type ButtonIconSide = 'left' | 'right';
-export type ButtonSize = 'sm' | 'md' | 'lg';
-export type ButtonElement = 'button' | 'a';
-export type ButtonIconComponentProps = {
-  className?: string;
-  size?: string | number;
-  'aria-hidden'?: boolean;
-};
-export type ButtonIconComponent = React.ComponentType<ButtonIconComponentProps>;
-export type ButtonIcon = React.ReactNode | ButtonIconComponent;
-
-interface ButtonBaseProps {
-  tone?: ButtonTone;
-  toneStep?: ColorStep;
-  textColor?: ButtonTextColor;
-  icon?: ButtonIcon;
-  iconSize?: number;
-  iconClassName?: string;
-  iconSide?: ButtonIconSide;
-  size?: ButtonSize;
-  loading?: boolean;
-  loadingLabel?: string;
-  spinner?: React.ReactNode;
-  children?: React.ReactNode;
-  as?: ButtonElement;
-}
-
-type ButtonAsButtonProps = ButtonBaseProps &
-  Omit<HTMLMotionProps<'button'>, 'ref' | 'color' | 'children' | 'disabled'> & {
-    as?: 'button';
-    disabled?: boolean;
-  };
-
-type ButtonAsAnchorProps = ButtonBaseProps &
-  Omit<HTMLMotionProps<'a'>, 'ref' | 'color' | 'children'> & {
-    as: 'a';
-    disabled?: boolean;
-  };
-
-export type ButtonProps = ButtonAsButtonProps | ButtonAsAnchorProps;
+} from '../tokens/color.js';
 
 const sizeClasses: Record<ButtonSize, string> = {
   sm: 'px-4 py-2 text-sm',
@@ -95,12 +60,6 @@ const defaultSpinner = (
   </svg>
 );
 
-function isIconComponent(value: ButtonIcon): value is ButtonIconComponent {
-  if (typeof value === 'function') return true;
-  if (typeof value === 'object' && value !== null && '$$typeof' in value) return true;
-  return false;
-}
-
 export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
   (
     {
@@ -108,12 +67,12 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
       as = 'button',
       tone,
       toneStep,
-      textColor,
+      textColor: textColorProp,
       icon,
       iconSize,
       iconClassName,
       iconSide = 'left',
-      size = 'md',
+      size: sizeProp,
       loading = false,
       loadingLabel = 'Loading',
       spinner = defaultSpinner,
@@ -127,13 +86,15 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
     const prefersReducedMotion = useReducedMotion();
     const resolvedTone = tone ?? 'blue';
     const resolvedToneStep = toneStep ?? 500;
-    const resolvedText =
-      textColorClasses[textColor ?? getDefaultOnToneText(resolvedTone, resolvedToneStep)];
+    const resolvedSize: ButtonSize = sizeProp ?? 'md';
+    const resolvedTextColor: ButtonTextColor =
+      textColorProp ?? getDefaultOnToneText(resolvedTone, resolvedToneStep);
+    const resolvedText = textColorClasses[resolvedTextColor];
     const isDisabled = Boolean(disabled || loading);
     const labelContent = loading ? loadingLabel : children;
     const hasLabel = labelContent !== undefined && labelContent !== null && labelContent !== '';
     const isIconOnly = !hasLabel && Boolean(icon);
-    const resolvedIconSize = iconSize ?? iconPixelSizeByButtonSize[size];
+    const resolvedIconSize = iconSize ?? iconPixelSizeByButtonSize[resolvedSize];
     const hasAccessibleName = Boolean(
       (props as { 'aria-label'?: string })['aria-label'] ||
       (props as { 'aria-labelledby'?: string })['aria-labelledby'] ||
@@ -145,7 +106,6 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
     const ringStep = shiftColorStep(resolvedToneStep, 1);
     const bgClass = toneStepClass('bg', resolvedTone, resolvedToneStep);
     const hoverBgClass = toneStepClass('hover:bg', resolvedTone, hoverStep);
-    const borderClass = toneStepClass('border-b', resolvedTone, borderStep);
     const shadowColorClass = toneStepClass('shadow', resolvedTone, borderStep);
     const ringClass = toneStepAlphaClass('focus-visible:ring', resolvedTone, ringStep, 45);
 
@@ -160,15 +120,14 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
     }, [hasAccessibleName, isIconOnly]);
 
     const sharedClassName = cn(
-      'relative inline-flex items-center justify-center rounded-xl border-b-4 font-bold tracking-wide outline-none transition-all duration-150 ease-in-out active:translate-y-[2px] active:border-b-2 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
-      'shadow-[0_4px_0_0]',
+      'relative inline-flex items-center justify-center rounded-xl bg-clip-padding font-bold tracking-wide outline-none transition-[transform,box-shadow,filter] duration-150 ease-in-out active:translate-y-[3px] active:shadow-[inset_0_-1px_0_0] active:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
+      'shadow-[inset_0_-5px_0_0]',
       bgClass,
       hoverBgClass,
-      borderClass,
       shadowColorClass,
       ringClass,
       resolvedText,
-      isIconOnly ? iconOnlySizeClasses[size] : sizeClasses[size],
+      isIconOnly ? iconOnlySizeClasses[resolvedSize] : sizeClasses[resolvedSize],
       isDisabled && 'pointer-events-none cursor-not-allowed opacity-50',
       className,
     );
@@ -176,7 +135,7 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
     const content = (
       <span
         className={cn(
-          'inline-flex items-center',
+          'relative -translate-y-0.5 inline-flex items-center',
           hasLabel ? 'gap-2.5' : 'gap-0',
           iconSide === 'right' && !loading && 'flex-row-reverse',
         )}
@@ -184,7 +143,7 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
         {loading ? (
           <span className="shrink-0">{spinner}</span>
         ) : icon ? (
-          isIconComponent(icon) ? (
+          isUiIconComponent(icon) ? (
             <span className="shrink-0">
               {React.createElement(icon, {
                 className: cn('shrink-0', iconClassName),
@@ -201,7 +160,12 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
     );
 
     const tapProps =
-      !isDisabled && !prefersReducedMotion ? ({ whileTap: { scale: 0.98 } } as const) : undefined;
+      !isDisabled && !prefersReducedMotion
+        ? ({
+            whileTap: { scale: 0.992, y: 2 },
+            transition: { type: 'spring', stiffness: 560, damping: 34, mass: 0.28 },
+          } as const)
+        : undefined;
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
       if (isDisabled) {

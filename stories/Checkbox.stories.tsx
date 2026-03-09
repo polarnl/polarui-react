@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { CheckWithLabel, COLOR_STEPS, PALETTE_TONES } from '../src/index.js';
+import { Checkbox, COLOR_STEPS, PALETTE_TONES } from '../src/index.js';
 
-const meta: Meta<typeof CheckWithLabel> = {
-  title: 'Components/CheckWithLabel',
-  component: CheckWithLabel,
+const meta: Meta<typeof Checkbox> = {
+  title: 'Components/Checkbox',
+  component: Checkbox,
   args: {
     label: 'Receive product updates',
   },
@@ -39,7 +39,7 @@ const meta: Meta<typeof CheckWithLabel> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof CheckWithLabel>;
+type Story = StoryObj<typeof Checkbox>;
 
 export const Default: Story = {
   args: {
