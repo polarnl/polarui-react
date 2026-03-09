@@ -35,7 +35,7 @@ const meta: Meta<typeof Dropdown> = {
     options,
   },
   argTypes: {
-    scheme: {
+    variant: {
       control: 'select',
       options: ['light', 'dark'],
     },
@@ -44,6 +44,9 @@ const meta: Meta<typeof Dropdown> = {
       options: ['sm', 'md', 'lg'],
     },
     disabled: {
+      control: 'boolean',
+    },
+    invalid: {
       control: 'boolean',
     },
   },
@@ -63,7 +66,7 @@ export const Default: Story = {
 
 export const Dark: Story = {
   args: {
-    scheme: 'dark',
+    variant: 'dark',
     defaultValue: 'design',
     label: 'Department',
   },

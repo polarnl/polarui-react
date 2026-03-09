@@ -9,7 +9,7 @@ const meta = {
     label: 'Email',
   },
   argTypes: {
-    scheme: {
+    variant: {
       control: 'select',
       options: ['light', 'dark'],
     },
@@ -23,6 +23,9 @@ const meta = {
     readOnly: {
       control: 'boolean',
     },
+    invalid: {
+      control: 'boolean',
+    },
   },
   parameters: {
     layout: 'centered',
@@ -33,13 +36,13 @@ export default meta;
 
 export const Default = {
   args: {
-    scheme: 'light',
+    variant: 'light',
   },
 };
 
 export const Dark = {
   args: {
-    scheme: 'dark',
+    variant: 'dark',
     label: 'Username',
     placeholder: 'Type your username',
   },

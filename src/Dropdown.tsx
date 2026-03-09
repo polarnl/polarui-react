@@ -2,7 +2,7 @@ import React from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { cn } from './cn.js';
 
-export type DropdownScheme = 'light' | 'dark';
+export type DropdownVariant = 'light' | 'dark';
 export type DropdownSize = 'sm' | 'md' | 'lg';
 export type DropdownIconComponentProps = {
   className?: string;
@@ -30,7 +30,8 @@ export interface DropdownProps {
   label?: React.ReactNode;
   description?: React.ReactNode;
   error?: React.ReactNode;
-  scheme?: DropdownScheme;
+  invalid?: boolean;
+  variant?: DropdownVariant;
   size?: DropdownSize;
   disabled?: boolean;
   required?: boolean;
@@ -47,7 +48,7 @@ export interface DropdownProps {
 }
 
 const schemeClasses: Record<
-  DropdownScheme,
+  DropdownVariant,
   { trigger: string; list: string; option: string; focus: string }
 > = {
   light: {
@@ -163,7 +164,8 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
       label,
       description,
       error,
-      scheme = 'light',
+      invalid,
+      variant,
       size = 'md',
       disabled,
       required,
@@ -199,9 +201,10 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
     const triggerRef = React.useRef<HTMLButtonElement>(null);
     const optionRefs = React.useRef<Array<HTMLLIElement | null>>([]);
 
-    const schemeConfig = schemeClasses[scheme];
+    const resolvedVariant = variant ?? 'light';
+    const schemeConfig = schemeClasses[resolvedVariant];
     const sizeConfig = sizeClasses[size];
-    const hasError = Boolean(error);
+    const hasError = Boolean(invalid || error);
     const hasAnyOptionIcons = options.some((option) => Boolean(option.icon));
     const resolvedMinWidth = typeof listMinWidth === 'number' ? `${listMinWidth}px` : listMinWidth;
     const prefersReducedMotion = useReducedMotion();
@@ -324,7 +327,7 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
             htmlFor={dropdownId}
             className={cn(
               'text-sm font-semibold leading-5 break-words',
-              scheme === 'dark' ? 'text-zinc-100' : 'text-zinc-900',
+              resolvedVariant === 'dark' ? 'text-zinc-100' : 'text-zinc-900',
               disabled && 'text-zinc-500',
             )}
           >
@@ -343,22 +346,22 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
             aria-controls={listboxId}
             aria-invalid={hasError || undefined}
             aria-describedby={describedBy}
-              className={cn(
-                'flex w-full min-w-0 items-center justify-between overflow-hidden rounded-xl border-2 border-b-[3px] text-left font-medium transition-all duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60',
-                schemeConfig.trigger,
-                schemeConfig.focus,
-                sizeConfig.trigger,
-                hasError &&
-                  'border-red-400 border-b-red-400 shadow-[0_3px_0_0_#FCA5A5,0_10px_18px_-16px_rgba(127,29,29,0.45)] hover:border-red-500 focus-visible:ring-red-500/45',
-                triggerClassName,
-              )}
+            className={cn(
+              'flex w-full min-w-0 items-center justify-between overflow-hidden rounded-xl border-2 border-b-[3px] text-left font-medium transition-all duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60',
+              schemeConfig.trigger,
+              schemeConfig.focus,
+              sizeConfig.trigger,
+              hasError &&
+                'border-red-400 border-b-red-400 shadow-[0_3px_0_0_#FCA5A5,0_10px_18px_-16px_rgba(127,29,29,0.45)] hover:border-red-500 focus-visible:ring-red-500/45',
+              triggerClassName,
+            )}
             onClick={() => setOpen((prev) => !prev)}
             onKeyDown={handleTriggerKeyDown}
           >
             <span
               className={cn(
                 'truncate',
-                !selectedOption && (scheme === 'dark' ? 'text-zinc-400' : 'text-zinc-500'),
+                !selectedOption && (resolvedVariant === 'dark' ? 'text-zinc-400' : 'text-zinc-500'),
               )}
             >
               {selectedOption ? selectedOption.label : placeholder}
@@ -367,7 +370,7 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
               className={cn(
                 'ml-3 shrink-0 transition-transform duration-150 ease-in-out',
                 open && 'rotate-180',
-                scheme === 'dark' ? 'text-zinc-300' : 'text-zinc-500',
+                resolvedVariant === 'dark' ? 'text-zinc-300' : 'text-zinc-500',
               )}
             >
               {renderIcon(chevronIcon ?? DefaultChevron, cn(sizeConfig.icon), 16)}
@@ -396,7 +399,7 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
                   'origin-top absolute z-50 mt-2 max-h-64 overflow-y-auto overflow-x-hidden rounded-xl border p-1.5',
                   '[scrollbar-width:thin] [&::-webkit-scrollbar]:h-2.5 [&::-webkit-scrollbar]:w-2.5 [&::-webkit-scrollbar-track]:bg-transparent',
                   '[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-2 [&::-webkit-scrollbar-thumb]:border-transparent [&::-webkit-scrollbar-thumb]:bg-clip-padding',
-                  scheme === 'dark'
+                  resolvedVariant === 'dark'
                     ? '[scrollbar-color:#71717A_transparent] [&::-webkit-scrollbar-thumb]:bg-zinc-500 hover:[&::-webkit-scrollbar-thumb]:bg-zinc-400'
                     : '[scrollbar-color:#A1A1AA_transparent] [&::-webkit-scrollbar-thumb]:bg-zinc-400 hover:[&::-webkit-scrollbar-thumb]:bg-zinc-500',
                   schemeConfig.list,
@@ -420,8 +423,10 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
                           'flex cursor-pointer items-start gap-2 rounded-lg transition-colors duration-100 ease-out',
                           sizeConfig.option,
                           schemeConfig.option,
-                          isHighlighted && (scheme === 'dark' ? 'bg-zinc-700' : 'bg-zinc-100'),
-                          isSelected && (scheme === 'dark' ? 'bg-zinc-700' : 'bg-zinc-100'),
+                          isHighlighted &&
+                            (resolvedVariant === 'dark' ? 'bg-zinc-700' : 'bg-zinc-100'),
+                          isSelected &&
+                            (resolvedVariant === 'dark' ? 'bg-zinc-700' : 'bg-zinc-100'),
                           option.disabled && 'pointer-events-none opacity-45',
                         )}
                         onMouseEnter={() => {
@@ -436,7 +441,7 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
                           <span
                             className={cn(
                               'mt-0.5 shrink-0',
-                              scheme === 'dark' ? 'text-zinc-300' : 'text-zinc-600',
+                              resolvedVariant === 'dark' ? 'text-zinc-300' : 'text-zinc-600',
                             )}
                           >
                             {option.icon ? (
@@ -453,7 +458,7 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
                             <span
                               className={cn(
                                 'mt-0.5 block text-xs leading-4 break-words',
-                                scheme === 'dark' ? 'text-zinc-400' : 'text-zinc-500',
+                                resolvedVariant === 'dark' ? 'text-zinc-400' : 'text-zinc-500',
                               )}
                             >
                               {option.description}
@@ -466,7 +471,7 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
                             className={cn(
                               'mt-0.5 shrink-0',
                               isSelected
-                                ? scheme === 'dark'
+                                ? resolvedVariant === 'dark'
                                   ? 'text-zinc-200'
                                   : 'text-zinc-700'
                                 : 'opacity-0',
@@ -482,7 +487,7 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
                   <li
                     className={cn(
                       'rounded-lg px-3 py-2 text-sm',
-                      scheme === 'dark' ? 'text-zinc-400' : 'text-zinc-500',
+                      resolvedVariant === 'dark' ? 'text-zinc-400' : 'text-zinc-500',
                     )}
                   >
                     {noOptionsMessage}
@@ -498,7 +503,7 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
             id={descriptionId}
             className={cn(
               'text-sm leading-5 break-words',
-              scheme === 'dark' ? 'text-zinc-400' : 'text-zinc-600',
+              resolvedVariant === 'dark' ? 'text-zinc-400' : 'text-zinc-600',
             )}
           >
             {description}

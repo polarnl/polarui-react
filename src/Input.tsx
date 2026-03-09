@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from './cn.js';
 
-export type InputScheme = 'light' | 'dark';
+export type InputVariant = 'light' | 'dark';
 export type InputSize = 'sm' | 'md' | 'lg';
 export type InputIconComponentProps = {
   className?: string;
@@ -12,11 +12,12 @@ export type InputIconComponent = React.ComponentType<InputIconComponentProps>;
 export type InputIcon = React.ReactNode | InputIconComponent;
 
 export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
-  scheme?: InputScheme;
+  variant?: InputVariant;
   size?: InputSize;
   label?: React.ReactNode;
   description?: React.ReactNode;
   error?: React.ReactNode;
+  invalid?: boolean;
   icon?: InputIcon;
   startIcon?: InputIcon;
   endIcon?: InputIcon;
@@ -25,7 +26,7 @@ export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElem
 }
 
 const schemeClasses: Record<
-  InputScheme,
+  InputVariant,
   { box: string; icon: string; input: string; focus: string }
 > = {
   light: {
@@ -73,11 +74,12 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       containerClassName,
       inputClassName,
       id,
-      scheme = 'light',
+      variant,
       size = 'md',
       label,
       description,
       error,
+      invalid,
       icon,
       startIcon,
       endIcon,
@@ -94,10 +96,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const errorId = error ? `${inputId}-error` : undefined;
     const describedBy =
       [ariaDescribedBy, descriptionId, errorId].filter(Boolean).join(' ') || undefined;
-    const schemeConfig = schemeClasses[scheme];
+    const resolvedVariant = variant ?? 'light';
+    const schemeConfig = schemeClasses[resolvedVariant];
     const sizeConfig = sizeClasses[size];
     const resolvedStartIcon = startIcon ?? icon;
-    const hasError = Boolean(error);
+    const hasError = Boolean(invalid || error);
 
     const renderIcon = (iconValue: InputIcon | undefined) => {
       if (!iconValue) return null;
@@ -118,7 +121,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             htmlFor={inputId}
             className={cn(
               'text-sm font-semibold leading-5 break-words',
-              scheme === 'dark' ? 'text-zinc-100' : 'text-zinc-900',
+              resolvedVariant === 'dark' ? 'text-zinc-100' : 'text-zinc-900',
               disabled && 'text-zinc-500',
             )}
           >
@@ -135,7 +138,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             hasError &&
               'border-red-400 border-b-red-400 shadow-[0_3px_0_0_#FCA5A5,0_10px_18px_-16px_rgba(127,29,29,0.45)] hover:border-red-500 focus-within:ring-red-500/45',
             readOnly &&
-              (scheme === 'dark'
+              (resolvedVariant === 'dark'
                 ? 'bg-zinc-700/70 shadow-none hover:border-zinc-600'
                 : 'bg-zinc-100/70 shadow-none hover:border-zinc-300'),
             disabled && 'pointer-events-none cursor-not-allowed opacity-60',
@@ -188,7 +191,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             id={descriptionId}
             className={cn(
               'text-sm leading-5 break-words',
-              scheme === 'dark' ? 'text-zinc-400' : 'text-zinc-600',
+              resolvedVariant === 'dark' ? 'text-zinc-400' : 'text-zinc-600',
             )}
           >
             {description}

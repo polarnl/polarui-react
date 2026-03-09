@@ -1,7 +1,7 @@
 export { Button } from './Button.js';
 export type {
   ButtonProps,
-  ButtonColor,
+  ButtonTone,
   ButtonTextColor,
   ButtonIconSide,
   ButtonSize,
@@ -13,7 +13,7 @@ export type {
 export { Input } from './Input.js';
 export type {
   InputProps,
-  InputScheme,
+  InputVariant,
   InputSize,
   InputIcon,
   InputIconComponent,
@@ -23,7 +23,7 @@ export { Dropdown } from './Dropdown.js';
 export type {
   DropdownProps,
   DropdownOption,
-  DropdownScheme,
+  DropdownVariant,
   DropdownSize,
   DropdownIcon,
   DropdownIconComponent,
@@ -32,7 +32,7 @@ export type {
 export { CheckWithLabel } from './CheckWithLabel.js';
 export type {
   CheckWithLabelProps,
-  CheckWithLabelColor,
+  CheckWithLabelTone,
   CheckWithLabelSize,
 } from './CheckWithLabel.js';
 export { cn } from './cn.js';

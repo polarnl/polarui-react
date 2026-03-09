@@ -24,7 +24,7 @@ const meta = {
       control: 'select',
       options: ['button', 'a'],
     },
-    color: {
+    tone: {
       control: 'select',
       options: ['sky', 'orange', 'red', 'green', 'blue', 'dark', 'light'],
     },
@@ -52,36 +52,36 @@ const meta = {
 export default meta;
 
 export const Default = {
-  args: { color: 'blue', size: 'md' },
+  args: { tone: 'blue', size: 'md' },
 };
 
 export const Sky = {
-  args: { color: 'sky' },
+  args: { tone: 'sky' },
 };
 
 export const Orange = {
-  args: { color: 'orange' },
+  args: { tone: 'orange' },
 };
 
 export const Red = {
-  args: { color: 'red' },
+  args: { tone: 'red' },
 };
 
 export const Green = {
-  args: { color: 'green' },
+  args: { tone: 'green' },
 };
 
 export const Dark = {
-  args: { color: 'dark' },
+  args: { tone: 'dark' },
 };
 
 export const Light = {
-  args: { color: 'light' },
+  args: { tone: 'light' },
 };
 
 export const WithIconRight = {
   args: {
-    color: 'blue',
+    tone: 'blue',
     icon: <StarIcon />,
     iconSide: 'right',
     children: 'Continue',
@@ -90,7 +90,7 @@ export const WithIconRight = {
 
 export const WithReactIconComponent = {
   args: {
-    color: 'sky',
+    tone: 'sky',
     icon: FiArrowRight,
     children: 'Next step',
   },
@@ -98,7 +98,7 @@ export const WithReactIconComponent = {
 
 export const Loading = {
   args: {
-    color: 'blue',
+    tone: 'blue',
     loading: true,
     children: 'Save changes',
   },
@@ -111,7 +111,7 @@ export const AsLink = {
     target: '_blank',
     rel: 'noreferrer',
     children: 'Open docs',
-    color: 'sky',
+    tone: 'sky',
   },
 };
 
@@ -120,7 +120,7 @@ export const IconOnly = {
     icon: <StarIcon />,
     children: null,
     'aria-label': 'Favorite',
-    color: 'blue',
+    tone: 'blue',
     size: 'sm',
   },
 };

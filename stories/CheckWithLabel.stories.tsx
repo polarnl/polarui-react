@@ -8,11 +8,11 @@ const meta: Meta<typeof CheckWithLabel> = {
     label: 'Receive product updates',
   },
   argTypes: {
-    color: {
+    tone: {
       control: 'select',
       options: ['sky', 'orange', 'red', 'green', 'blue', 'dark', 'light'],
     },
-    controlSize: {
+    size: {
       control: 'select',
       options: ['sm', 'md', 'lg'],
     },
@@ -23,6 +23,9 @@ const meta: Meta<typeof CheckWithLabel> = {
       control: 'boolean',
     },
     disabled: {
+      control: 'boolean',
+    },
+    invalid: {
       control: 'boolean',
     },
   },
@@ -36,14 +39,14 @@ type Story = StoryObj<typeof CheckWithLabel>;
 
 export const Default: Story = {
   args: {
-    color: 'blue',
+    tone: 'blue',
     defaultChecked: false,
   },
 };
 
 export const Checked: Story = {
   args: {
-    color: 'sky',
+    tone: 'sky',
     defaultChecked: true,
   },
 };
@@ -73,7 +76,7 @@ export const Indeterminate: Story = {
 
 export const Large: Story = {
   args: {
-    controlSize: 'lg',
+    size: 'lg',
     defaultChecked: true,
     label: 'Large checkbox option',
   },

@@ -4,7 +4,7 @@ import React from 'react';
 import { motion, type HTMLMotionProps, useReducedMotion } from 'framer-motion';
 import { cn } from './cn.js';
 
-export type ButtonColor = 'sky' | 'orange' | 'red' | 'green' | 'blue' | 'dark' | 'light';
+export type ButtonTone = 'sky' | 'orange' | 'red' | 'green' | 'blue' | 'dark' | 'light';
 export type ButtonTextColor = 'white' | 'black';
 export type ButtonIconSide = 'left' | 'right';
 export type ButtonSize = 'sm' | 'md' | 'lg';
@@ -18,7 +18,7 @@ export type ButtonIconComponent = React.ComponentType<ButtonIconComponentProps>;
 export type ButtonIcon = React.ReactNode | ButtonIconComponent;
 
 interface ButtonBaseProps {
-  color?: ButtonColor;
+  tone?: ButtonTone;
   textColor?: ButtonTextColor;
   icon?: ButtonIcon;
   iconSize?: number;
@@ -47,7 +47,7 @@ type ButtonAsAnchorProps = ButtonBaseProps &
 export type ButtonProps = ButtonAsButtonProps | ButtonAsAnchorProps;
 
 const colorClasses: Record<
-  ButtonColor,
+  ButtonTone,
   { tone: string; focus: string; defaultText: ButtonTextColor }
 > = {
   sky: {
@@ -138,7 +138,7 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
     {
       className,
       as = 'button',
-      color = 'blue',
+      tone,
       textColor,
       icon,
       iconSize,
@@ -156,7 +156,8 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
     ref,
   ) => {
     const prefersReducedMotion = useReducedMotion();
-    const colorConfig = colorClasses[color];
+    const resolvedTone = tone ?? 'blue';
+    const colorConfig = colorClasses[resolvedTone];
     const resolvedText = textColorClasses[textColor ?? colorConfig.defaultText];
     const isDisabled = Boolean(disabled || loading);
     const labelContent = loading ? loadingLabel : children;
