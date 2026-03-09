@@ -3,11 +3,12 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import type { HTMLMotionProps } from 'framer-motion';
-import { isIconComponent as isUiIconComponent } from '../types/icon.js';
 import type {
   ButtonAsAnchorProps,
   ButtonAsButtonProps,
   ButtonBaseProps,
+  ButtonIcon,
+  ButtonIconNode,
   ButtonProps,
   ButtonSize,
   ButtonTextColor,
@@ -69,6 +70,7 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
       toneStep,
       textColor: textColorProp,
       icon,
+      iconNode,
       iconSize,
       iconClassName,
       iconSide = 'left',
@@ -93,7 +95,9 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
     const isDisabled = Boolean(disabled || loading);
     const labelContent = loading ? loadingLabel : children;
     const hasLabel = labelContent !== undefined && labelContent !== null && labelContent !== '';
-    const isIconOnly = !hasLabel && Boolean(icon);
+    const resolvedIconComponent = icon as ButtonIcon | undefined;
+    const resolvedIconNode = iconNode as ButtonIconNode | undefined;
+    const isIconOnly = !hasLabel && Boolean(resolvedIconComponent || resolvedIconNode);
     const resolvedIconSize = iconSize ?? iconPixelSizeByButtonSize[resolvedSize];
     const hasAccessibleName = Boolean(
       (props as { 'aria-label'?: string })['aria-label'] ||
@@ -142,18 +146,16 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
       >
         {loading ? (
           <span className="shrink-0">{spinner}</span>
-        ) : icon ? (
-          isUiIconComponent(icon) ? (
-            <span className="shrink-0">
-              {React.createElement(icon, {
-                className: cn('shrink-0', iconClassName),
-                size: resolvedIconSize,
-                'aria-hidden': true,
-              })}
-            </span>
-          ) : (
-            <span className={cn('shrink-0', iconClassName)}>{icon}</span>
-          )
+        ) : resolvedIconComponent ? (
+          <span className="shrink-0">
+            {React.createElement(resolvedIconComponent, {
+              className: cn('shrink-0', iconClassName),
+              size: resolvedIconSize,
+              'aria-hidden': true,
+            })}
+          </span>
+        ) : resolvedIconNode ? (
+          <span className={cn('shrink-0', iconClassName)}>{resolvedIconNode}</span>
         ) : null}
         {hasLabel ? <span>{labelContent}</span> : null}
       </span>

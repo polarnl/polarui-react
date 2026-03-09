@@ -1,5 +1,4 @@
 export type { UiIcon, UiIconComponent, UiIconComponentProps } from './icon.js';
-export { isIconComponent } from './icon.js';
 export type { ColorStep, PaletteTone } from './color.js';
 export type {
   ButtonAsAnchorProps,
@@ -9,6 +8,7 @@ export type {
   ButtonIcon,
   ButtonIconComponent,
   ButtonIconComponentProps,
+  ButtonIconNode,
   ButtonIconSide,
   ButtonProps,
   ButtonSize,
@@ -20,6 +20,7 @@ export type {
   DropdownIcon,
   DropdownIconComponent,
   DropdownIconComponentProps,
+  DropdownIconNode,
   DropdownOption,
   DropdownProps,
   DropdownSize,
@@ -29,6 +30,7 @@ export type {
   InputIcon,
   InputIconComponent,
   InputIconComponentProps,
+  InputIconNode,
   InputProps,
   InputSize,
   InputVariant,

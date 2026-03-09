@@ -1,9 +1,9 @@
 import React from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { isIconComponent as isUiIconComponent } from '../types/icon.js';
 import type {
   DropdownIcon,
   DropdownIconComponent,
+  DropdownIconNode,
   DropdownOption,
   DropdownProps,
   DropdownSize,
@@ -103,12 +103,8 @@ const DefaultCheck: DropdownIconComponent = ({ className }) => (
   </svg>
 );
 
-function renderIcon(icon: DropdownIcon, className: string, size = 16): React.ReactNode {
-  if (isUiIconComponent(icon)) {
-    return React.createElement(icon, { className, size, 'aria-hidden': true });
-  }
-
-  return <span className={className}>{icon}</span>;
+function renderIcon(node: DropdownIconNode, className: string): React.ReactNode {
+  return <span className={className}>{node}</span>;
 }
 
 export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
@@ -133,7 +129,9 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
       name,
       noOptionsMessage = 'No options available',
       chevronIcon,
+      chevronIconNode,
       selectedIcon,
+      selectedIconNode,
       hideSelectedIcon = false,
       listMinWidth = '16rem',
       className,
@@ -168,7 +166,7 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
     const schemeConfig = schemeClasses[resolvedVariant];
     const sizeConfig = sizeClasses[size];
     const hasError = Boolean(invalid || error);
-    const hasAnyOptionIcons = options.some((option) => Boolean(option.icon));
+    const hasAnyOptionIcons = options.some((option) => Boolean(option.icon || option.iconNode));
     const resolvedMinWidth = typeof listMinWidth === 'number' ? `${listMinWidth}px` : listMinWidth;
     const prefersReducedMotion = useReducedMotion();
     const ringStep = shiftColorStep(resolvedToneStep, 1);
@@ -345,7 +343,19 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
                 resolvedVariant === 'dark' ? 'text-zinc-300' : 'text-zinc-500',
               )}
             >
-              {renderIcon(chevronIcon ?? DefaultChevron, cn(sizeConfig.icon), 16)}
+              {chevronIcon
+                ? React.createElement(chevronIcon, {
+                    className: cn(sizeConfig.icon),
+                    size: 16,
+                    'aria-hidden': true,
+                  })
+                : chevronIconNode
+                  ? renderIcon(chevronIconNode, cn(sizeConfig.icon))
+                  : React.createElement(DefaultChevron, {
+                      className: cn(sizeConfig.icon),
+                      size: 16,
+                      'aria-hidden': true,
+                    })}
             </span>
           </button>
 
@@ -415,7 +425,13 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
                             )}
                           >
                             {option.icon ? (
-                              renderIcon(option.icon, cn(sizeConfig.icon), 16)
+                              React.createElement(option.icon, {
+                                className: cn(sizeConfig.icon),
+                                size: 16,
+                                'aria-hidden': true,
+                              })
+                            ) : option.iconNode ? (
+                              renderIcon(option.iconNode, cn(sizeConfig.icon))
                             ) : (
                               <span className={cn(sizeConfig.icon)} />
                             )}
@@ -443,7 +459,19 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
                               isSelected ? selectedTextClass : 'opacity-0',
                             )}
                           >
-                            {renderIcon(selectedIcon ?? DefaultCheck, cn(sizeConfig.icon), 16)}
+                            {selectedIcon
+                              ? React.createElement(selectedIcon, {
+                                  className: cn(sizeConfig.icon),
+                                  size: 16,
+                                  'aria-hidden': true,
+                                })
+                              : selectedIconNode
+                                ? renderIcon(selectedIconNode, cn(sizeConfig.icon))
+                                : React.createElement(DefaultCheck, {
+                                    className: cn(sizeConfig.icon),
+                                    size: 16,
+                                    'aria-hidden': true,
+                                  })}
                           </span>
                         ) : null}
                       </li>

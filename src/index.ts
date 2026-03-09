@@ -7,6 +7,7 @@ export type {
   ButtonIcon,
   ButtonIconComponent,
   ButtonIconComponentProps,
+  ButtonIconNode,
   ButtonIconSide,
   ButtonProps,
   ButtonSize,
@@ -18,6 +19,7 @@ export type {
   DropdownIcon,
   DropdownIconComponent,
   DropdownIconComponentProps,
+  DropdownIconNode,
   DropdownOption,
   DropdownProps,
   DropdownSize,
@@ -25,6 +27,7 @@ export type {
   InputIcon,
   InputIconComponent,
   InputIconComponentProps,
+  InputIconNode,
   InputProps,
   InputSize,
   InputVariant,
@@ -42,5 +45,4 @@ export {
   toneStepAlphaClass,
   toneStepClass,
 } from './tokens/index.js';
-export { isIconComponent } from './types/index.js';
 export { cn } from './utils/index.js';

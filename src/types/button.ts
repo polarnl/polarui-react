@@ -10,13 +10,15 @@ export type ButtonSize = 'sm' | 'md' | 'lg';
 export type ButtonElement = 'button' | 'a';
 export type ButtonIconComponentProps = UiIconComponentProps;
 export type ButtonIconComponent = UiIconComponent;
-export type ButtonIcon = UiIcon;
+export type ButtonIcon = UiIconComponent;
+export type ButtonIconNode = UiIcon;
 
 export interface ButtonBaseProps {
   tone?: ButtonTone;
   toneStep?: ColorStep;
   textColor?: ButtonTextColor;
   icon?: ButtonIcon;
+  iconNode?: ButtonIconNode;
   iconSize?: number;
   iconClassName?: string;
   iconSide?: ButtonIconSide;

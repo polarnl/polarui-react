@@ -1,6 +1,12 @@
 import React from 'react';
-import { isIconComponent as isUiIconComponent } from '../types/icon.js';
-import type { InputIcon, InputProps, InputSize, InputVariant } from '../types/input.js';
+import type {
+  InputIcon,
+  InputIconComponent,
+  InputIconNode,
+  InputProps,
+  InputSize,
+  InputVariant,
+} from '../types/input.js';
 import { cn } from '../utils/cn.js';
 import { shiftColorStep, toneStepAlphaClass, toneStepClass } from '../tokens/color.js';
 
@@ -56,8 +62,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       error,
       invalid,
       icon,
+      iconNode,
       startIcon,
+      startIconNode,
       endIcon,
+      endIconNode,
       disabled,
       readOnly,
       'aria-describedby': ariaDescribedBy,
@@ -76,23 +85,29 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const resolvedToneStep = toneStep ?? 500;
     const schemeConfig = schemeClasses[resolvedVariant];
     const sizeConfig = sizeClasses[size];
-    const resolvedStartIcon = startIcon ?? icon;
+    const resolvedStartIconComponent = startIcon ?? icon;
+    const resolvedStartIconNode = startIconNode ?? iconNode;
+    const resolvedEndIconComponent = endIcon;
+    const resolvedEndIconNode = endIconNode;
     const hasError = Boolean(invalid || error);
     const focusStep = shiftColorStep(resolvedToneStep, 1);
     const hoverBorderStep = shiftColorStep(resolvedToneStep, 2);
     const focusRingClass = toneStepAlphaClass('focus-within:ring', resolvedTone, focusStep, 40);
     const hoverBorderClass = toneStepClass('hover:border', resolvedTone, hoverBorderStep);
 
-    const renderIcon = (iconValue: InputIcon | undefined) => {
-      if (!iconValue) return null;
-      if (isUiIconComponent(iconValue)) {
-        return React.createElement(iconValue, {
+    const renderIcon = (
+      iconCmp: InputIconComponent | undefined,
+      node: InputIconNode | undefined,
+    ): React.ReactNode => {
+      if (iconCmp) {
+        return React.createElement(iconCmp, {
           className: cn('shrink-0', sizeConfig.icon),
           'aria-hidden': true,
         });
       }
 
-      return <span className="shrink-0">{iconValue}</span>;
+      if (!node) return null;
+      return <span className="shrink-0">{node}</span>;
     };
 
     return (
@@ -128,14 +143,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             containerClassName,
           )}
         >
-          {resolvedStartIcon ? (
+          {resolvedStartIconComponent || resolvedStartIconNode ? (
             <span
               className={cn(
                 'relative -translate-y-0.5 inline-flex items-center justify-center',
                 hasError ? 'text-red-500' : schemeConfig.icon,
               )}
             >
-              {renderIcon(resolvedStartIcon)}
+              {renderIcon(resolvedStartIconComponent, resolvedStartIconNode)}
             </span>
           ) : null}
 
@@ -157,14 +172,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
 
-          {endIcon ? (
+          {resolvedEndIconComponent || resolvedEndIconNode ? (
             <span
               className={cn(
                 'relative -translate-y-0.5 inline-flex items-center justify-center',
                 hasError ? 'text-red-500' : schemeConfig.icon,
               )}
             >
-              {renderIcon(endIcon)}
+              {renderIcon(resolvedEndIconComponent, resolvedEndIconNode)}
             </span>
           ) : null}
         </div>
