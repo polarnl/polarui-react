@@ -1,14 +1,8 @@
 import React from 'react';
-import type {
-  InputIcon,
-  InputIconComponent,
-  InputIconNode,
-  InputProps,
-  InputSize,
-  InputVariant,
-} from '../types/input.js';
+import { isIconComponent as isUiIconComponent } from '../types/icon.js';
+import type { InputIcon, InputProps, InputSize, InputVariant } from '../types/input.js';
 import { cn } from '../utils/cn.js';
-import { shiftColorStep, toneStepAlphaClass, toneStepClass } from '../tokens/color.js';
+import { resolveToneColor, shiftColorStep, withAlpha } from '../tokens/color.js';
 
 const schemeClasses: Record<
   InputVariant,
@@ -62,11 +56,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       error,
       invalid,
       icon,
-      iconNode,
       startIcon,
-      startIconNode,
       endIcon,
-      endIconNode,
       disabled,
       readOnly,
       'aria-describedby': ariaDescribedBy,
@@ -85,29 +76,26 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const resolvedToneStep = toneStep ?? 500;
     const schemeConfig = schemeClasses[resolvedVariant];
     const sizeConfig = sizeClasses[size];
-    const resolvedStartIconComponent = startIcon ?? icon;
-    const resolvedStartIconNode = startIconNode ?? iconNode;
-    const resolvedEndIconComponent = endIcon;
-    const resolvedEndIconNode = endIconNode;
+    const resolvedStartIcon = startIcon ?? icon;
     const hasError = Boolean(invalid || error);
     const focusStep = shiftColorStep(resolvedToneStep, 1);
     const hoverBorderStep = shiftColorStep(resolvedToneStep, 2);
-    const focusRingClass = toneStepAlphaClass('focus-within:ring', resolvedTone, focusStep, 40);
-    const hoverBorderClass = toneStepClass('hover:border', resolvedTone, hoverBorderStep);
+    const toneContainerStyle = {
+      '--polarui-input-ring': withAlpha(resolveToneColor(resolvedTone, focusStep), 40),
+      '--polarui-input-hover-border': resolveToneColor(resolvedTone, hoverBorderStep),
+      '--tw-ring-color': 'var(--polarui-input-ring)',
+    } as React.CSSProperties & Record<string, string>;
 
-    const renderIcon = (
-      iconCmp: InputIconComponent | undefined,
-      node: InputIconNode | undefined,
-    ): React.ReactNode => {
-      if (iconCmp) {
-        return React.createElement(iconCmp, {
+    const renderIcon = (iconValue: InputIcon | undefined) => {
+      if (!iconValue) return null;
+      if (isUiIconComponent(iconValue)) {
+        return React.createElement(iconValue, {
           className: cn('shrink-0', sizeConfig.icon),
           'aria-hidden': true,
         });
       }
 
-      if (!node) return null;
-      return <span className="shrink-0">{node}</span>;
+      return <span className="shrink-0">{iconValue}</span>;
     };
 
     return (
@@ -126,13 +114,16 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         ) : null}
 
         <div
+          style={toneContainerStyle}
           className={cn(
             'min-w-0 rounded-xl border-2 bg-clip-padding transition-all duration-150 ease-in-out focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 flex w-full items-center',
             schemeConfig.box,
             schemeConfig.focus,
             sizeConfig.box,
-            focusRingClass,
-            hoverBorderClass,
+            !hasError && 'focus-within:ring-[var(--polarui-input-ring)]',
+            !hasError &&
+              !readOnly &&
+              'hover:border-[var(--polarui-input-hover-border)]',
             hasError &&
               'border-red-400 shadow-[inset_0_-4px_0_0_#FCA5A5,0_10px_18px_-16px_rgba(127,29,29,0.45)] hover:border-red-500 focus-within:ring-red-500/45',
             readOnly &&
@@ -143,14 +134,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             containerClassName,
           )}
         >
-          {resolvedStartIconComponent || resolvedStartIconNode ? (
+          {resolvedStartIcon ? (
             <span
               className={cn(
                 'relative -translate-y-0.5 inline-flex items-center justify-center',
                 hasError ? 'text-red-500' : schemeConfig.icon,
               )}
             >
-              {renderIcon(resolvedStartIconComponent, resolvedStartIconNode)}
+              {renderIcon(resolvedStartIcon)}
             </span>
           ) : null}
 
@@ -172,14 +163,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
 
-          {resolvedEndIconComponent || resolvedEndIconNode ? (
+          {endIcon ? (
             <span
               className={cn(
                 'relative -translate-y-0.5 inline-flex items-center justify-center',
                 hasError ? 'text-red-500' : schemeConfig.icon,
               )}
             >
-              {renderIcon(resolvedEndIconComponent, resolvedEndIconNode)}
+              {renderIcon(endIcon)}
             </span>
           ) : null}
         </div>

@@ -4,7 +4,6 @@ export type {
   ButtonIcon,
   ButtonIconComponent,
   ButtonIconComponentProps,
-  ButtonIconNode,
   ButtonIconSide,
   ButtonProps,
   ButtonSize,
@@ -17,7 +16,6 @@ export type {
   InputIcon,
   InputIconComponent,
   InputIconComponentProps,
-  InputIconNode,
   InputProps,
   InputSize,
   InputVariant,
@@ -28,7 +26,6 @@ export type {
   DropdownIcon,
   DropdownIconComponent,
   DropdownIconComponentProps,
-  DropdownIconNode,
   DropdownOption,
   DropdownProps,
   DropdownSize,
@@ -37,3 +34,15 @@ export type {
 
 export { Checkbox } from './Checkbox.js';
 export type { CheckboxProps, CheckboxSize, CheckboxTone } from '../types/checkbox.js';
+
+export { RadioGroup } from './RadioGroup.js';
+export type {
+  RadioGroupIcon,
+  RadioGroupIconComponent,
+  RadioGroupIconComponentProps,
+  RadioGroupOrientation,
+  RadioGroupProps,
+  RadioGroupSize,
+  RadioGroupVariant,
+  RadioOption,
+} from '../types/radio.js';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { cn } from '../utils/cn.js';
-import { shiftColorStep, toneStepAlphaClass, toneStepClass } from '../tokens/color.js';
+import { resolveToneColor, shiftColorStep, withAlpha } from '../tokens/color.js';
 import type { CheckboxProps, CheckboxSize } from '../types/checkbox.js';
 
 const CheckIcon = ({ className }: { className?: string }) => (
@@ -107,29 +107,17 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
     const shadowStep = shiftColorStep(resolvedToneStep, -2);
     const borderStep = shiftColorStep(resolvedToneStep, 0);
     const ringStep = shiftColorStep(resolvedToneStep, 1);
-    const checkedBorderClass = toneStepClass('peer-checked:border', resolvedTone, borderStep);
-    const indeterminateBorderClass = toneStepClass(
-      'peer-indeterminate:border',
-      resolvedTone,
-      borderStep,
-    );
-    const checkedIconClass = toneStepClass('peer-checked:text', resolvedTone, iconStep);
-    const indeterminateIconClass = toneStepClass('peer-indeterminate:text', resolvedTone, iconStep);
-    const checkedShadowColorClass = toneStepClass('peer-checked:shadow', resolvedTone, shadowStep);
-    const indeterminateShadowColorClass = toneStepClass(
-      'peer-indeterminate:shadow',
-      resolvedTone,
-      shadowStep,
-    );
-    const focusRingClass = toneStepAlphaClass(
-      'peer-focus-visible:ring',
-      resolvedTone,
-      ringStep,
-      45,
-    );
+    const toneStyle = {
+      '--polarui-checkbox-border': resolveToneColor(resolvedTone, borderStep),
+      '--polarui-checkbox-icon': resolveToneColor(resolvedTone, iconStep),
+      '--polarui-checkbox-shadow': resolveToneColor(resolvedTone, shadowStep),
+      '--polarui-checkbox-ring': withAlpha(resolveToneColor(resolvedTone, ringStep), 45),
+      '--tw-ring-color': 'var(--polarui-checkbox-ring)',
+    } as React.CSSProperties & Record<string, string>;
 
     return (
       <label
+        style={toneStyle}
         className={cn(
           'group inline-flex items-start gap-3 align-top',
           disabled ? 'pointer-events-none cursor-not-allowed opacity-60' : 'cursor-pointer',
@@ -153,14 +141,15 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
         <span
           className={cn(
             'relative mt-0.5 inline-flex shrink-0 items-center justify-center border-2 border-zinc-300 bg-white bg-clip-padding text-transparent shadow-[inset_0_-2px_0_0_#D4D4D8] transition-all duration-150 ease-in-out group-hover:border-zinc-400 group-hover:bg-zinc-50 peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-white peer-active:translate-y-px peer-active:shadow-none',
-            'peer-checked:shadow-[inset_0_-2px_0_0] peer-indeterminate:shadow-[inset_0_-2px_0_0]',
-            checkedBorderClass,
-            indeterminateBorderClass,
-            checkedIconClass,
-            indeterminateIconClass,
-            checkedShadowColorClass,
-            indeterminateShadowColorClass,
-            focusRingClass,
+            !hasError && 'peer-checked:border-[var(--polarui-checkbox-border)]',
+            !hasError && 'peer-indeterminate:border-[var(--polarui-checkbox-border)]',
+            !hasError && 'peer-checked:text-[var(--polarui-checkbox-icon)]',
+            !hasError && 'peer-indeterminate:text-[var(--polarui-checkbox-icon)]',
+            !hasError &&
+              'peer-checked:shadow-[inset_0_-2px_0_0_var(--polarui-checkbox-shadow)]',
+            !hasError &&
+              'peer-indeterminate:shadow-[inset_0_-2px_0_0_var(--polarui-checkbox-shadow)]',
+            !hasError && 'peer-focus-visible:ring-[var(--polarui-checkbox-ring)]',
             sizeClasses[resolvedSize],
             hasError &&
               'border-red-300 group-hover:border-red-400 peer-checked:border-red-500 peer-checked:shadow-[inset_0_-2px_0_0_#FCA5A5] peer-indeterminate:border-red-500 peer-indeterminate:shadow-[inset_0_-2px_0_0_#FCA5A5] peer-checked:text-red-600 peer-indeterminate:text-red-600 peer-focus-visible:ring-red-500/45',

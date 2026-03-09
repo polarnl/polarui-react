@@ -1,4 +1,4 @@
-export { Button, Checkbox, Dropdown, Input } from './components/index.js';
+export { Button, Checkbox, Dropdown, Input, RadioGroup } from './components/index.js';
 export type {
   ButtonAsAnchorProps,
   ButtonAsButtonProps,
@@ -7,7 +7,6 @@ export type {
   ButtonIcon,
   ButtonIconComponent,
   ButtonIconComponentProps,
-  ButtonIconNode,
   ButtonIconSide,
   ButtonProps,
   ButtonSize,
@@ -19,7 +18,6 @@ export type {
   DropdownIcon,
   DropdownIconComponent,
   DropdownIconComponentProps,
-  DropdownIconNode,
   DropdownOption,
   DropdownProps,
   DropdownSize,
@@ -27,10 +25,17 @@ export type {
   InputIcon,
   InputIconComponent,
   InputIconComponentProps,
-  InputIconNode,
   InputProps,
   InputSize,
   InputVariant,
+  RadioGroupIcon,
+  RadioGroupIconComponent,
+  RadioGroupIconComponentProps,
+  RadioGroupOrientation,
+  RadioGroupProps,
+  RadioGroupSize,
+  RadioGroupVariant,
+  RadioOption,
   UiIcon,
   UiIconComponent,
   UiIconComponentProps,
@@ -41,8 +46,11 @@ export {
   COLOR_STEPS,
   PALETTE_TONES,
   getDefaultOnToneText,
+  resolveToneColor,
   shiftColorStep,
   toneStepAlphaClass,
   toneStepClass,
+  withAlpha,
 } from './tokens/index.js';
+export { isIconComponent } from './types/index.js';
 export { cn } from './utils/index.js';

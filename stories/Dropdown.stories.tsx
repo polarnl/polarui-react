@@ -4,12 +4,7 @@ import { FiBriefcase, FiChevronsDown, FiCode, FiFlag, FiHeadphones } from 'react
 import { COLOR_STEPS, Dropdown, PALETTE_TONES } from '../src/index.js';
 
 const options = [
-  {
-    value: 'design',
-    label: 'Design',
-    description: 'UI, UX, branding',
-    icon: FiBriefcase,
-  },
+  { value: 'design', label: 'Design', description: 'UI, UX, branding', icon: FiBriefcase },
   {
     value: 'engineering',
     label: 'Engineering',

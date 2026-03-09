@@ -1,16 +1,16 @@
 import React from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { isIconComponent as isUiIconComponent } from '../types/icon.js';
 import type {
   DropdownIcon,
   DropdownIconComponent,
-  DropdownIconNode,
   DropdownOption,
   DropdownProps,
   DropdownSize,
   DropdownVariant,
 } from '../types/dropdown.js';
 import { cn } from '../utils/cn.js';
-import { shiftColorStep, toneStepAlphaClass, toneStepClass } from '../tokens/color.js';
+import { resolveToneColor, shiftColorStep, withAlpha } from '../tokens/color.js';
 
 const schemeClasses: Record<
   DropdownVariant,
@@ -103,8 +103,12 @@ const DefaultCheck: DropdownIconComponent = ({ className }) => (
   </svg>
 );
 
-function renderIcon(node: DropdownIconNode, className: string): React.ReactNode {
-  return <span className={className}>{node}</span>;
+function renderIcon(icon: DropdownIcon, className: string, size = 16): React.ReactNode {
+  if (isUiIconComponent(icon)) {
+    return React.createElement(icon, { className, size, 'aria-hidden': true });
+  }
+
+  return <span className={className}>{icon}</span>;
 }
 
 export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
@@ -129,9 +133,7 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
       name,
       noOptionsMessage = 'No options available',
       chevronIcon,
-      chevronIconNode,
       selectedIcon,
-      selectedIconNode,
       hideSelectedIcon = false,
       listMinWidth = '16rem',
       className,
@@ -166,16 +168,19 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
     const schemeConfig = schemeClasses[resolvedVariant];
     const sizeConfig = sizeClasses[size];
     const hasError = Boolean(invalid || error);
-    const hasAnyOptionIcons = options.some((option) => Boolean(option.icon || option.iconNode));
+    const hasAnyOptionIcons = options.some((option) => Boolean(option.icon));
     const resolvedMinWidth = typeof listMinWidth === 'number' ? `${listMinWidth}px` : listMinWidth;
     const prefersReducedMotion = useReducedMotion();
     const ringStep = shiftColorStep(resolvedToneStep, 1);
     const hoverBorderStep = shiftColorStep(resolvedToneStep, 2);
     const selectedTextStep = shiftColorStep(resolvedToneStep, 2);
-    const focusRingClass = toneStepAlphaClass('focus-visible:ring', resolvedTone, ringStep, 40);
-    const hoverBorderClass = toneStepClass('hover:border', resolvedTone, hoverBorderStep);
-    const selectedBgClass = toneStepAlphaClass('bg', resolvedTone, resolvedToneStep, 15);
-    const selectedTextClass = toneStepClass('text', resolvedTone, selectedTextStep);
+    const toneStyle = {
+      '--polarui-dropdown-ring': withAlpha(resolveToneColor(resolvedTone, ringStep), 40),
+      '--polarui-dropdown-hover-border': resolveToneColor(resolvedTone, hoverBorderStep),
+      '--polarui-dropdown-selected-bg': withAlpha(resolveToneColor(resolvedTone, resolvedToneStep), 15),
+      '--polarui-dropdown-selected-text': resolveToneColor(resolvedTone, selectedTextStep),
+      '--tw-ring-color': 'var(--polarui-dropdown-ring)',
+    } as React.CSSProperties & Record<string, string>;
 
     React.useImperativeHandle(ref, () => triggerRef.current as HTMLButtonElement);
 
@@ -288,6 +293,7 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
     return (
       <div
         ref={rootRef}
+        style={toneStyle}
         className={cn('inline-flex w-80 max-w-full min-w-0 flex-col gap-1.5', className)}
       >
         {label ? (
@@ -319,8 +325,8 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
               schemeConfig.trigger,
               schemeConfig.focus,
               sizeConfig.trigger,
-              focusRingClass,
-              hoverBorderClass,
+              !hasError && 'focus-visible:ring-[var(--polarui-dropdown-ring)]',
+              !hasError && 'hover:border-[var(--polarui-dropdown-hover-border)]',
               hasError &&
                 'border-red-400 shadow-[inset_0_-4px_0_0_#FCA5A5,0_10px_18px_-16px_rgba(127,29,29,0.45)] hover:border-red-500 focus-visible:ring-red-500/45',
               triggerClassName,
@@ -343,19 +349,7 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
                 resolvedVariant === 'dark' ? 'text-zinc-300' : 'text-zinc-500',
               )}
             >
-              {chevronIcon
-                ? React.createElement(chevronIcon, {
-                    className: cn(sizeConfig.icon),
-                    size: 16,
-                    'aria-hidden': true,
-                  })
-                : chevronIconNode
-                  ? renderIcon(chevronIconNode, cn(sizeConfig.icon))
-                  : React.createElement(DefaultChevron, {
-                      className: cn(sizeConfig.icon),
-                      size: 16,
-                      'aria-hidden': true,
-                    })}
+              {renderIcon(chevronIcon ?? DefaultChevron, cn(sizeConfig.icon), 16)}
             </span>
           </button>
 
@@ -405,8 +399,8 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
                           'flex cursor-pointer items-start gap-2 rounded-lg transition-colors duration-100 ease-out',
                           sizeConfig.option,
                           schemeConfig.option,
-                          isHighlighted && selectedBgClass,
-                          isSelected && selectedBgClass,
+                          isHighlighted && 'bg-[var(--polarui-dropdown-selected-bg)]',
+                          isSelected && 'bg-[var(--polarui-dropdown-selected-bg)]',
                           option.disabled && 'pointer-events-none opacity-45',
                         )}
                         onMouseEnter={() => {
@@ -425,13 +419,7 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
                             )}
                           >
                             {option.icon ? (
-                              React.createElement(option.icon, {
-                                className: cn(sizeConfig.icon),
-                                size: 16,
-                                'aria-hidden': true,
-                              })
-                            ) : option.iconNode ? (
-                              renderIcon(option.iconNode, cn(sizeConfig.icon))
+                              renderIcon(option.icon, cn(sizeConfig.icon), 16)
                             ) : (
                               <span className={cn(sizeConfig.icon)} />
                             )}
@@ -456,22 +444,10 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
                           <span
                             className={cn(
                               'mt-0.5 shrink-0',
-                              isSelected ? selectedTextClass : 'opacity-0',
+                              isSelected ? 'text-[var(--polarui-dropdown-selected-text)]' : 'opacity-0',
                             )}
                           >
-                            {selectedIcon
-                              ? React.createElement(selectedIcon, {
-                                  className: cn(sizeConfig.icon),
-                                  size: 16,
-                                  'aria-hidden': true,
-                                })
-                              : selectedIconNode
-                                ? renderIcon(selectedIconNode, cn(sizeConfig.icon))
-                                : React.createElement(DefaultCheck, {
-                                    className: cn(sizeConfig.icon),
-                                    size: 16,
-                                    'aria-hidden': true,
-                                  })}
+                            {renderIcon(selectedIcon ?? DefaultCheck, cn(sizeConfig.icon), 16)}
                           </span>
                         ) : null}
                       </li>

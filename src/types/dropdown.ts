@@ -6,8 +6,7 @@ export type DropdownVariant = 'light' | 'dark';
 export type DropdownSize = 'sm' | 'md' | 'lg';
 export type DropdownIconComponentProps = UiIconComponentProps;
 export type DropdownIconComponent = UiIconComponent;
-export type DropdownIcon = UiIconComponent;
-export type DropdownIconNode = UiIcon;
+export type DropdownIcon = UiIcon;
 
 export interface DropdownOption {
   value: string;
@@ -15,7 +14,6 @@ export interface DropdownOption {
   description?: React.ReactNode;
   disabled?: boolean;
   icon?: DropdownIcon;
-  iconNode?: DropdownIconNode;
 }
 
 export interface DropdownProps {
@@ -38,9 +36,7 @@ export interface DropdownProps {
   name?: string;
   noOptionsMessage?: React.ReactNode;
   chevronIcon?: DropdownIcon;
-  chevronIconNode?: DropdownIconNode;
   selectedIcon?: DropdownIcon;
-  selectedIconNode?: DropdownIconNode;
   hideSelectedIcon?: boolean;
   listMinWidth?: number | string;
   className?: string;

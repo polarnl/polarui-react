@@ -6,8 +6,7 @@ export type InputVariant = 'light' | 'dark';
 export type InputSize = 'sm' | 'md' | 'lg';
 export type InputIconComponentProps = UiIconComponentProps;
 export type InputIconComponent = UiIconComponent;
-export type InputIcon = UiIconComponent;
-export type InputIconNode = UiIcon;
+export type InputIcon = UiIcon;
 
 export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   variant?: InputVariant;
@@ -19,11 +18,8 @@ export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElem
   error?: React.ReactNode;
   invalid?: boolean;
   icon?: InputIcon;
-  iconNode?: InputIconNode;
   startIcon?: InputIcon;
-  startIconNode?: InputIconNode;
   endIcon?: InputIcon;
-  endIconNode?: InputIconNode;
   inputClassName?: string;
   containerClassName?: string;
 }

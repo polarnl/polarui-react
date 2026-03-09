@@ -86,7 +86,7 @@ export const Light = {
 export const WithIconRight = {
   args: {
     tone: 'blue',
-    iconNode: <StarIcon />,
+    icon: <StarIcon />,
     iconSide: 'right',
     children: 'Continue',
   },
@@ -97,22 +97,6 @@ export const WithReactIconComponent = {
     tone: 'sky',
     icon: FiArrowRight,
     children: 'Next step',
-  },
-};
-
-export const WithEmojiIcon = {
-  args: {
-    tone: 'orange',
-    iconNode: '🔥',
-    children: 'Hot launch',
-  },
-};
-
-export const WithCustomSvgNode = {
-  args: {
-    tone: 'violet',
-    iconNode: <StarIcon />,
-    children: 'Custom SVG',
   },
 };
 
@@ -137,7 +121,7 @@ export const AsLink = {
 
 export const IconOnly = {
   args: {
-    iconNode: <StarIcon />,
+    icon: <StarIcon />,
     children: null,
     'aria-label': 'Favorite',
     tone: 'blue',

@@ -1,4 +1,5 @@
 import type { ColorStep, PaletteTone } from '../types/color.js';
+import colors from 'tailwindcss/colors';
 
 export const COLOR_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950] as const;
 
@@ -63,4 +64,23 @@ export function getDefaultOnToneText(tone: PaletteTone, step: ColorStep): 'white
     default:
       return 'white';
   }
+}
+
+function getToneScale(tone: PaletteTone): Record<string, string> | undefined {
+  const scale = colors[tone];
+  return typeof scale === 'object' && scale !== null ? (scale as Record<string, string>) : undefined;
+}
+
+export function resolveToneColor(tone: PaletteTone, step: ColorStep): string {
+  const scale = getToneScale(tone);
+  const value = scale?.[String(step)];
+  if (value) return value;
+
+  const fallbackScale = getToneScale('blue');
+  return fallbackScale?.[String(step)] ?? fallbackScale?.['500'] ?? '#3b82f6';
+}
+
+export function withAlpha(color: string, alpha: number): string {
+  const clamped = clamp(alpha, 0, 100);
+  return `color-mix(in oklab, ${color} ${clamped}%, transparent)`;
 }

@@ -3,12 +3,11 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import type { HTMLMotionProps } from 'framer-motion';
+import { isIconComponent as isUiIconComponent } from '../types/icon.js';
 import type {
   ButtonAsAnchorProps,
   ButtonAsButtonProps,
   ButtonBaseProps,
-  ButtonIcon,
-  ButtonIconNode,
   ButtonProps,
   ButtonSize,
   ButtonTextColor,
@@ -16,9 +15,9 @@ import type {
 import { cn } from '../utils/cn.js';
 import {
   getDefaultOnToneText,
+  resolveToneColor,
   shiftColorStep,
-  toneStepAlphaClass,
-  toneStepClass,
+  withAlpha,
 } from '../tokens/color.js';
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -70,7 +69,6 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
       toneStep,
       textColor: textColorProp,
       icon,
-      iconNode,
       iconSize,
       iconClassName,
       iconSide = 'left',
@@ -95,9 +93,7 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
     const isDisabled = Boolean(disabled || loading);
     const labelContent = loading ? loadingLabel : children;
     const hasLabel = labelContent !== undefined && labelContent !== null && labelContent !== '';
-    const resolvedIconComponent = icon as ButtonIcon | undefined;
-    const resolvedIconNode = iconNode as ButtonIconNode | undefined;
-    const isIconOnly = !hasLabel && Boolean(resolvedIconComponent || resolvedIconNode);
+    const isIconOnly = !hasLabel && Boolean(icon);
     const resolvedIconSize = iconSize ?? iconPixelSizeByButtonSize[resolvedSize];
     const hasAccessibleName = Boolean(
       (props as { 'aria-label'?: string })['aria-label'] ||
@@ -108,10 +104,19 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
     const hoverStep = shiftColorStep(resolvedToneStep, -1);
     const borderStep = shiftColorStep(resolvedToneStep, 2);
     const ringStep = shiftColorStep(resolvedToneStep, 1);
-    const bgClass = toneStepClass('bg', resolvedTone, resolvedToneStep);
-    const hoverBgClass = toneStepClass('hover:bg', resolvedTone, hoverStep);
-    const shadowColorClass = toneStepClass('shadow', resolvedTone, borderStep);
-    const ringClass = toneStepAlphaClass('focus-visible:ring', resolvedTone, ringStep, 45);
+    const toneStyle = {
+      '--polarui-button-bg': resolveToneColor(resolvedTone, resolvedToneStep),
+      '--polarui-button-hover-bg': resolveToneColor(resolvedTone, hoverStep),
+      '--polarui-button-shadow': resolveToneColor(resolvedTone, borderStep),
+      '--polarui-button-ring': withAlpha(resolveToneColor(resolvedTone, ringStep), 45),
+      '--tw-ring-color': 'var(--polarui-button-ring)',
+    } as React.CSSProperties & Record<string, string>;
+    const mergedStyle = {
+      ...toneStyle,
+      ...(style ?? {}),
+    } as React.CSSProperties;
+    const motionAnchorStyle = mergedStyle as NonNullable<HTMLMotionProps<'a'>['style']>;
+    const motionButtonStyle = mergedStyle as NonNullable<HTMLMotionProps<'button'>['style']>;
 
     React.useEffect(() => {
       if (!isIconOnly) return;
@@ -125,11 +130,7 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
 
     const sharedClassName = cn(
       'relative inline-flex items-center justify-center rounded-xl bg-clip-padding font-bold tracking-wide outline-none transition-[transform,box-shadow,filter] duration-150 ease-in-out active:translate-y-[3px] active:shadow-[inset_0_-1px_0_0] active:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
-      'shadow-[inset_0_-5px_0_0]',
-      bgClass,
-      hoverBgClass,
-      shadowColorClass,
-      ringClass,
+      'shadow-[inset_0_-5px_0_0_var(--polarui-button-shadow)] bg-[var(--polarui-button-bg)] hover:bg-[var(--polarui-button-hover-bg)]',
       resolvedText,
       isIconOnly ? iconOnlySizeClasses[resolvedSize] : sizeClasses[resolvedSize],
       isDisabled && 'pointer-events-none cursor-not-allowed opacity-50',
@@ -146,16 +147,18 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
       >
         {loading ? (
           <span className="shrink-0">{spinner}</span>
-        ) : resolvedIconComponent ? (
-          <span className="shrink-0">
-            {React.createElement(resolvedIconComponent, {
-              className: cn('shrink-0', iconClassName),
-              size: resolvedIconSize,
-              'aria-hidden': true,
-            })}
-          </span>
-        ) : resolvedIconNode ? (
-          <span className={cn('shrink-0', iconClassName)}>{resolvedIconNode}</span>
+        ) : icon ? (
+          isUiIconComponent(icon) ? (
+            <span className="shrink-0">
+              {React.createElement(icon, {
+                className: cn('shrink-0', iconClassName),
+                size: resolvedIconSize,
+                'aria-hidden': true,
+              })}
+            </span>
+          ) : (
+            <span className={cn('shrink-0', iconClassName)}>{icon}</span>
+          )
         ) : null}
         {hasLabel ? <span>{labelContent}</span> : null}
       </span>
@@ -194,9 +197,7 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
           aria-disabled={isDisabled || undefined}
           tabIndex={isDisabled ? -1 : anchorProps.tabIndex}
           {...anchorProps}
-          {...(style
-            ? ({ style: style as NonNullable<HTMLMotionProps<'a'>['style']> } as const)
-            : {})}
+          style={motionAnchorStyle}
           {...tapProps}
           className={sharedClassName}
           onClick={handleClick}
@@ -218,7 +219,7 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
         disabled={isDisabled}
         aria-busy={loading || undefined}
         {...buttonProps}
-        {...(style ? ({ style } as const) : {})}
+        style={motionButtonStyle}
         {...tapProps}
         className={sharedClassName}
         onClick={handleClick}
