@@ -1,5 +1,5 @@
 import { FiArrowRight } from 'react-icons/fi';
-import { Button } from '../src/index.js';
+import { Button, COLOR_STEPS, PALETTE_TONES } from '../src/index.js';
 
 const StarIcon = () => (
   <svg
@@ -26,7 +26,11 @@ const meta = {
     },
     tone: {
       control: 'select',
-      options: ['sky', 'orange', 'red', 'green', 'blue', 'dark', 'light'],
+      options: PALETTE_TONES,
+    },
+    toneStep: {
+      control: 'select',
+      options: COLOR_STEPS,
     },
     size: {
       control: 'select',
@@ -52,7 +56,7 @@ const meta = {
 export default meta;
 
 export const Default = {
-  args: { tone: 'blue', size: 'md' },
+  args: { tone: 'blue', toneStep: 500, size: 'md' },
 };
 
 export const Sky = {
@@ -72,11 +76,11 @@ export const Green = {
 };
 
 export const Dark = {
-  args: { tone: 'dark' },
+  args: { tone: 'zinc', toneStep: 700 },
 };
 
 export const Light = {
-  args: { tone: 'light' },
+  args: { tone: 'stone', toneStep: 100 },
 };
 
 export const WithIconRight = {

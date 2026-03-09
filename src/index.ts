@@ -10,6 +10,15 @@ export type {
   ButtonIconComponent,
   ButtonIconComponentProps,
 } from './Button.js';
+export {
+  COLOR_STEPS,
+  PALETTE_TONES,
+  getDefaultOnToneText,
+  shiftColorStep,
+  toneStepAlphaClass,
+  toneStepClass,
+} from './color-system.js';
+export type { ColorStep, PaletteTone } from './color-system.js';
 export { Input } from './Input.js';
 export type {
   InputProps,

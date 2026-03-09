@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { CheckWithLabel } from '../src/index.js';
+import { CheckWithLabel, COLOR_STEPS, PALETTE_TONES } from '../src/index.js';
 
 const meta: Meta<typeof CheckWithLabel> = {
   title: 'Components/CheckWithLabel',
@@ -10,7 +10,11 @@ const meta: Meta<typeof CheckWithLabel> = {
   argTypes: {
     tone: {
       control: 'select',
-      options: ['sky', 'orange', 'red', 'green', 'blue', 'dark', 'light'],
+      options: PALETTE_TONES,
+    },
+    toneStep: {
+      control: 'select',
+      options: COLOR_STEPS,
     },
     size: {
       control: 'select',
@@ -40,6 +44,7 @@ type Story = StoryObj<typeof CheckWithLabel>;
 export const Default: Story = {
   args: {
     tone: 'blue',
+    toneStep: 500,
     defaultChecked: false,
   },
 };

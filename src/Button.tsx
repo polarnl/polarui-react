@@ -3,8 +3,16 @@
 import React from 'react';
 import { motion, type HTMLMotionProps, useReducedMotion } from 'framer-motion';
 import { cn } from './cn.js';
+import {
+  getDefaultOnToneText,
+  type ColorStep,
+  type PaletteTone,
+  shiftColorStep,
+  toneStepAlphaClass,
+  toneStepClass,
+} from './color-system.js';
 
-export type ButtonTone = 'sky' | 'orange' | 'red' | 'green' | 'blue' | 'dark' | 'light';
+export type ButtonTone = PaletteTone;
 export type ButtonTextColor = 'white' | 'black';
 export type ButtonIconSide = 'left' | 'right';
 export type ButtonSize = 'sm' | 'md' | 'lg';
@@ -19,6 +27,7 @@ export type ButtonIcon = React.ReactNode | ButtonIconComponent;
 
 interface ButtonBaseProps {
   tone?: ButtonTone;
+  toneStep?: ColorStep;
   textColor?: ButtonTextColor;
   icon?: ButtonIcon;
   iconSize?: number;
@@ -45,47 +54,6 @@ type ButtonAsAnchorProps = ButtonBaseProps &
   };
 
 export type ButtonProps = ButtonAsButtonProps | ButtonAsAnchorProps;
-
-const colorClasses: Record<
-  ButtonTone,
-  { tone: string; focus: string; defaultText: ButtonTextColor }
-> = {
-  sky: {
-    tone: 'bg-sky-400 hover:bg-sky-300 border-b-sky-600 shadow-[0_4px_0_0_#0284C7]',
-    focus: 'focus-visible:ring-sky-500/45',
-    defaultText: 'white',
-  },
-  orange: {
-    tone: 'bg-orange-500 hover:bg-orange-400 border-b-orange-700 shadow-[0_4px_0_0_#C2410C]',
-    focus: 'focus-visible:ring-orange-500/45',
-    defaultText: 'white',
-  },
-  red: {
-    tone: 'bg-red-500 hover:bg-red-400 border-b-red-800 shadow-[0_4px_0_0_#991B1B]',
-    focus: 'focus-visible:ring-red-500/45',
-    defaultText: 'white',
-  },
-  green: {
-    tone: 'bg-emerald-500 hover:bg-emerald-400 border-b-emerald-700 shadow-[0_4px_0_0_#047857]',
-    focus: 'focus-visible:ring-emerald-500/45',
-    defaultText: 'white',
-  },
-  blue: {
-    tone: 'bg-blue-500 hover:bg-blue-400 border-b-blue-700 shadow-[0_4px_0_0_#1D4ED8]',
-    focus: 'focus-visible:ring-blue-500/45',
-    defaultText: 'white',
-  },
-  dark: {
-    tone: 'bg-zinc-700 hover:bg-zinc-600 border-b-zinc-900 shadow-[0_4px_0_0_#18181B]',
-    focus: 'focus-visible:ring-zinc-400/45',
-    defaultText: 'white',
-  },
-  light: {
-    tone: 'bg-zinc-50 hover:bg-white border-b-zinc-300 shadow-[0_4px_0_0_#D4D4D8]',
-    focus: 'focus-visible:ring-zinc-500/45',
-    defaultText: 'black',
-  },
-};
 
 const sizeClasses: Record<ButtonSize, string> = {
   sm: 'px-4 py-2 text-sm',
@@ -139,6 +107,7 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
       className,
       as = 'button',
       tone,
+      toneStep,
       textColor,
       icon,
       iconSize,
@@ -157,8 +126,9 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
   ) => {
     const prefersReducedMotion = useReducedMotion();
     const resolvedTone = tone ?? 'blue';
-    const colorConfig = colorClasses[resolvedTone];
-    const resolvedText = textColorClasses[textColor ?? colorConfig.defaultText];
+    const resolvedToneStep = toneStep ?? 500;
+    const resolvedText =
+      textColorClasses[textColor ?? getDefaultOnToneText(resolvedTone, resolvedToneStep)];
     const isDisabled = Boolean(disabled || loading);
     const labelContent = loading ? loadingLabel : children;
     const hasLabel = labelContent !== undefined && labelContent !== null && labelContent !== '';
@@ -169,6 +139,15 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
       (props as { 'aria-labelledby'?: string })['aria-labelledby'] ||
       (props as { title?: string }).title,
     );
+
+    const hoverStep = shiftColorStep(resolvedToneStep, -1);
+    const borderStep = shiftColorStep(resolvedToneStep, 2);
+    const ringStep = shiftColorStep(resolvedToneStep, 1);
+    const bgClass = toneStepClass('bg', resolvedTone, resolvedToneStep);
+    const hoverBgClass = toneStepClass('hover:bg', resolvedTone, hoverStep);
+    const borderClass = toneStepClass('border-b', resolvedTone, borderStep);
+    const shadowColorClass = toneStepClass('shadow', resolvedTone, borderStep);
+    const ringClass = toneStepAlphaClass('focus-visible:ring', resolvedTone, ringStep, 45);
 
     React.useEffect(() => {
       if (!isIconOnly) return;
@@ -181,9 +160,13 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
     }, [hasAccessibleName, isIconOnly]);
 
     const sharedClassName = cn(
-      'relative inline-flex items-center justify-center rounded-xl border-b-4 px-6 py-3 font-bold tracking-wide outline-none transition-all duration-150 ease-in-out active:translate-y-[2px] active:border-b-2 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
-      colorConfig.tone,
-      colorConfig.focus,
+      'relative inline-flex items-center justify-center rounded-xl border-b-4 font-bold tracking-wide outline-none transition-all duration-150 ease-in-out active:translate-y-[2px] active:border-b-2 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
+      'shadow-[0_4px_0_0]',
+      bgClass,
+      hoverBgClass,
+      borderClass,
+      shadowColorClass,
+      ringClass,
       resolvedText,
       isIconOnly ? iconOnlySizeClasses[size] : sizeClasses[size],
       isDisabled && 'pointer-events-none cursor-not-allowed opacity-50',
@@ -217,10 +200,8 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
       </span>
     );
 
-    const motionProps = {
-      ...(style ? { style } : {}),
-      ...(!isDisabled && !prefersReducedMotion ? { whileTap: { scale: 0.98 } } : {}),
-    };
+    const tapProps =
+      !isDisabled && !prefersReducedMotion ? ({ whileTap: { scale: 0.98 } } as const) : undefined;
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
       if (isDisabled) {
@@ -247,7 +228,10 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
           aria-disabled={isDisabled || undefined}
           tabIndex={isDisabled ? -1 : anchorProps.tabIndex}
           {...anchorProps}
-          {...motionProps}
+          {...(style
+            ? ({ style: style as NonNullable<HTMLMotionProps<'a'>['style']> } as const)
+            : {})}
+          {...tapProps}
           className={sharedClassName}
           onClick={handleClick}
         >
@@ -268,7 +252,8 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
         disabled={isDisabled}
         aria-busy={loading || undefined}
         {...buttonProps}
-        {...motionProps}
+        {...(style ? ({ style } as const) : {})}
+        {...tapProps}
         className={sharedClassName}
         onClick={handleClick}
       >

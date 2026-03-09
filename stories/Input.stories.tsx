@@ -1,5 +1,5 @@
 import { FiSearch, FiUser } from 'react-icons/fi';
-import { Input } from '../src/index.js';
+import { COLOR_STEPS, Input, PALETTE_TONES } from '../src/index.js';
 
 const meta = {
   title: 'Components/Input',
@@ -12,6 +12,14 @@ const meta = {
     variant: {
       control: 'select',
       options: ['light', 'dark'],
+    },
+    tone: {
+      control: 'select',
+      options: PALETTE_TONES,
+    },
+    toneStep: {
+      control: 'select',
+      options: COLOR_STEPS,
     },
     size: {
       control: 'select',
@@ -37,6 +45,8 @@ export default meta;
 export const Default = {
   args: {
     variant: 'light',
+    tone: 'blue',
+    toneStep: 500,
   },
 };
 

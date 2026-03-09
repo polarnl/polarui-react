@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { FiBriefcase, FiChevronsDown, FiCode, FiFlag, FiHeadphones } from 'react-icons/fi';
-import { Dropdown } from '../src/index.js';
+import { COLOR_STEPS, Dropdown, PALETTE_TONES } from '../src/index.js';
 
 const options = [
   { value: 'design', label: 'Design', description: 'UI, UX, branding', icon: FiBriefcase },
@@ -33,11 +33,21 @@ const meta: Meta<typeof Dropdown> = {
     label: 'Team',
     placeholder: 'Select a team',
     options,
+    tone: 'blue',
+    toneStep: 500,
   },
   argTypes: {
     variant: {
       control: 'select',
       options: ['light', 'dark'],
+    },
+    tone: {
+      control: 'select',
+      options: PALETTE_TONES,
+    },
+    toneStep: {
+      control: 'select',
+      options: COLOR_STEPS,
     },
     size: {
       control: 'select',

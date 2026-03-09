@@ -1,5 +1,12 @@
 import React from 'react';
 import { cn } from './cn.js';
+import {
+  type ColorStep,
+  type PaletteTone,
+  shiftColorStep,
+  toneStepAlphaClass,
+  toneStepClass,
+} from './color-system.js';
 
 export type InputVariant = 'light' | 'dark';
 export type InputSize = 'sm' | 'md' | 'lg';
@@ -13,6 +20,8 @@ export type InputIcon = React.ReactNode | InputIconComponent;
 
 export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   variant?: InputVariant;
+  tone?: PaletteTone;
+  toneStep?: ColorStep;
   size?: InputSize;
   label?: React.ReactNode;
   description?: React.ReactNode;
@@ -30,16 +39,16 @@ const schemeClasses: Record<
   { box: string; icon: string; input: string; focus: string }
 > = {
   light: {
-    box: 'bg-white border-zinc-300 border-b-zinc-300 shadow-[0_3px_0_0_#D4D4D8,0_10px_18px_-16px_rgba(15,23,42,0.45)] hover:border-zinc-400',
+    box: 'bg-white border-zinc-300 border-b-zinc-300 shadow-[0_3px_0_0_#D4D4D8,0_10px_18px_-16px_rgba(15,23,42,0.45)]',
     icon: 'text-zinc-500',
     input: 'text-zinc-900 placeholder:text-zinc-400',
-    focus: 'focus-within:ring-zinc-400/35 focus-within:ring-offset-white',
+    focus: 'focus-within:ring-offset-white',
   },
   dark: {
-    box: 'bg-zinc-800 border-zinc-600 border-b-zinc-600 shadow-[0_3px_0_0_#52525B,0_10px_18px_-16px_rgba(0,0,0,0.7)] hover:border-zinc-500',
+    box: 'bg-zinc-800 border-zinc-600 border-b-zinc-600 shadow-[0_3px_0_0_#52525B,0_10px_18px_-16px_rgba(0,0,0,0.7)]',
     icon: 'text-zinc-300',
     input: 'text-zinc-100 placeholder:text-zinc-400',
-    focus: 'focus-within:ring-zinc-300/35 focus-within:ring-offset-zinc-900',
+    focus: 'focus-within:ring-offset-zinc-900',
   },
 };
 
@@ -75,6 +84,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       inputClassName,
       id,
       variant,
+      tone,
+      toneStep,
       size = 'md',
       label,
       description,
@@ -97,10 +108,16 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const describedBy =
       [ariaDescribedBy, descriptionId, errorId].filter(Boolean).join(' ') || undefined;
     const resolvedVariant = variant ?? 'light';
+    const resolvedTone = tone ?? 'blue';
+    const resolvedToneStep = toneStep ?? 500;
     const schemeConfig = schemeClasses[resolvedVariant];
     const sizeConfig = sizeClasses[size];
     const resolvedStartIcon = startIcon ?? icon;
     const hasError = Boolean(invalid || error);
+    const focusStep = shiftColorStep(resolvedToneStep, 1);
+    const hoverBorderStep = shiftColorStep(resolvedToneStep, 2);
+    const focusRingClass = toneStepAlphaClass('focus-within:ring', resolvedTone, focusStep, 40);
+    const hoverBorderClass = toneStepClass('hover:border', resolvedTone, hoverBorderStep);
 
     const renderIcon = (iconValue: InputIcon | undefined) => {
       if (!iconValue) return null;
@@ -131,10 +148,12 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
         <div
           className={cn(
-            'flex w-full min-w-0 items-center overflow-hidden rounded-xl border-2 border-b-[3px] transition-all duration-150 ease-in-out focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
+            'min-w-0 overflow-hidden rounded-xl border-2 border-b-[3px] transition-all duration-150 ease-in-out focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 flex w-full items-center',
             schemeConfig.box,
             schemeConfig.focus,
             sizeConfig.box,
+            focusRingClass,
+            hoverBorderClass,
             hasError &&
               'border-red-400 border-b-red-400 shadow-[0_3px_0_0_#FCA5A5,0_10px_18px_-16px_rgba(127,29,29,0.45)] hover:border-red-500 focus-within:ring-red-500/45',
             readOnly &&

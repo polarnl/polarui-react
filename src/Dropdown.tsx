@@ -1,6 +1,13 @@
 import React from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { cn } from './cn.js';
+import {
+  type ColorStep,
+  type PaletteTone,
+  shiftColorStep,
+  toneStepAlphaClass,
+  toneStepClass,
+} from './color-system.js';
 
 export type DropdownVariant = 'light' | 'dark';
 export type DropdownSize = 'sm' | 'md' | 'lg';
@@ -32,6 +39,8 @@ export interface DropdownProps {
   error?: React.ReactNode;
   invalid?: boolean;
   variant?: DropdownVariant;
+  tone?: PaletteTone;
+  toneStep?: ColorStep;
   size?: DropdownSize;
   disabled?: boolean;
   required?: boolean;
@@ -53,17 +62,17 @@ const schemeClasses: Record<
 > = {
   light: {
     trigger:
-      'bg-white border-zinc-300 border-b-zinc-300 text-zinc-900 shadow-[0_3px_0_0_#D4D4D8,0_10px_18px_-16px_rgba(15,23,42,0.45)] hover:border-zinc-400',
+      'bg-white border-zinc-300 border-b-zinc-300 text-zinc-900 shadow-[0_3px_0_0_#D4D4D8,0_10px_18px_-16px_rgba(15,23,42,0.45)]',
     list: 'bg-white border-zinc-300 shadow-[0_12px_28px_-16px_rgba(15,23,42,0.4)]',
     option: 'text-zinc-900 hover:bg-zinc-100',
-    focus: 'focus-visible:ring-zinc-400/35 focus-visible:ring-offset-white',
+    focus: 'focus-visible:ring-offset-white',
   },
   dark: {
     trigger:
-      'bg-zinc-800 border-zinc-600 border-b-zinc-600 text-zinc-100 shadow-[0_3px_0_0_#52525B,0_10px_18px_-16px_rgba(0,0,0,0.7)] hover:border-zinc-500',
+      'bg-zinc-800 border-zinc-600 border-b-zinc-600 text-zinc-100 shadow-[0_3px_0_0_#52525B,0_10px_18px_-16px_rgba(0,0,0,0.7)]',
     list: 'bg-zinc-800 border-zinc-600 shadow-[0_14px_30px_-16px_rgba(0,0,0,0.75)]',
     option: 'text-zinc-100 hover:bg-zinc-700',
-    focus: 'focus-visible:ring-zinc-300/35 focus-visible:ring-offset-zinc-900',
+    focus: 'focus-visible:ring-offset-zinc-900',
   },
 };
 
@@ -166,6 +175,8 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
       error,
       invalid,
       variant,
+      tone,
+      toneStep,
       size = 'md',
       disabled,
       required,
@@ -202,12 +213,21 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
     const optionRefs = React.useRef<Array<HTMLLIElement | null>>([]);
 
     const resolvedVariant = variant ?? 'light';
+    const resolvedTone = tone ?? 'blue';
+    const resolvedToneStep = toneStep ?? 500;
     const schemeConfig = schemeClasses[resolvedVariant];
     const sizeConfig = sizeClasses[size];
     const hasError = Boolean(invalid || error);
     const hasAnyOptionIcons = options.some((option) => Boolean(option.icon));
     const resolvedMinWidth = typeof listMinWidth === 'number' ? `${listMinWidth}px` : listMinWidth;
     const prefersReducedMotion = useReducedMotion();
+    const ringStep = shiftColorStep(resolvedToneStep, 1);
+    const hoverBorderStep = shiftColorStep(resolvedToneStep, 2);
+    const selectedTextStep = shiftColorStep(resolvedToneStep, 2);
+    const focusRingClass = toneStepAlphaClass('focus-visible:ring', resolvedTone, ringStep, 40);
+    const hoverBorderClass = toneStepClass('hover:border', resolvedTone, hoverBorderStep);
+    const selectedBgClass = toneStepAlphaClass('bg', resolvedTone, resolvedToneStep, 15);
+    const selectedTextClass = toneStepClass('text', resolvedTone, selectedTextStep);
 
     React.useImperativeHandle(ref, () => triggerRef.current as HTMLButtonElement);
 
@@ -347,10 +367,12 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
             aria-invalid={hasError || undefined}
             aria-describedby={describedBy}
             className={cn(
-              'flex w-full min-w-0 items-center justify-between overflow-hidden rounded-xl border-2 border-b-[3px] text-left font-medium transition-all duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60',
+              'min-w-0 overflow-hidden rounded-xl border-2 border-b-[3px] transition-all duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60 flex w-full items-center justify-between text-left font-medium',
               schemeConfig.trigger,
               schemeConfig.focus,
               sizeConfig.trigger,
+              focusRingClass,
+              hoverBorderClass,
               hasError &&
                 'border-red-400 border-b-red-400 shadow-[0_3px_0_0_#FCA5A5,0_10px_18px_-16px_rgba(127,29,29,0.45)] hover:border-red-500 focus-visible:ring-red-500/45',
               triggerClassName,
@@ -423,10 +445,8 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
                           'flex cursor-pointer items-start gap-2 rounded-lg transition-colors duration-100 ease-out',
                           sizeConfig.option,
                           schemeConfig.option,
-                          isHighlighted &&
-                            (resolvedVariant === 'dark' ? 'bg-zinc-700' : 'bg-zinc-100'),
-                          isSelected &&
-                            (resolvedVariant === 'dark' ? 'bg-zinc-700' : 'bg-zinc-100'),
+                          isHighlighted && selectedBgClass,
+                          isSelected && selectedBgClass,
                           option.disabled && 'pointer-events-none opacity-45',
                         )}
                         onMouseEnter={() => {
@@ -470,11 +490,7 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
                           <span
                             className={cn(
                               'mt-0.5 shrink-0',
-                              isSelected
-                                ? resolvedVariant === 'dark'
-                                  ? 'text-zinc-200'
-                                  : 'text-zinc-700'
-                                : 'opacity-0',
+                              isSelected ? selectedTextClass : 'opacity-0',
                             )}
                           >
                             {renderIcon(selectedIcon ?? DefaultCheck, cn(sizeConfig.icon), 16)}

@@ -1,7 +1,14 @@
 import React from 'react';
 import { cn } from './cn.js';
+import {
+  type ColorStep,
+  type PaletteTone,
+  shiftColorStep,
+  toneStepAlphaClass,
+  toneStepClass,
+} from './color-system.js';
 
-export type CheckWithLabelTone = 'sky' | 'orange' | 'red' | 'green' | 'blue' | 'dark' | 'light';
+export type CheckWithLabelTone = PaletteTone;
 export type CheckWithLabelSize = 'sm' | 'md' | 'lg';
 
 export interface CheckWithLabelProps extends Omit<
@@ -13,6 +20,7 @@ export interface CheckWithLabelProps extends Omit<
   error?: React.ReactNode;
   invalid?: boolean;
   tone?: CheckWithLabelTone;
+  toneStep?: ColorStep;
   size?: CheckWithLabelSize;
   indeterminate?: boolean;
 }
@@ -65,51 +73,6 @@ const textSizeClasses: Record<CheckWithLabelSize, string> = {
   lg: 'text-base',
 };
 
-const toneClasses: Record<CheckWithLabelTone, { checked: string; icon: string; focus: string }> = {
-  sky: {
-    checked:
-      'peer-checked:border-sky-500 peer-indeterminate:border-sky-500 peer-checked:shadow-[0_2px_0_0_#7DD3FC] peer-indeterminate:shadow-[0_2px_0_0_#7DD3FC]',
-    icon: 'peer-checked:text-sky-600 peer-indeterminate:text-sky-600',
-    focus: 'peer-focus-visible:ring-sky-500/45',
-  },
-  orange: {
-    checked:
-      'peer-checked:border-orange-500 peer-indeterminate:border-orange-500 peer-checked:shadow-[0_2px_0_0_#FDBA74] peer-indeterminate:shadow-[0_2px_0_0_#FDBA74]',
-    icon: 'peer-checked:text-orange-600 peer-indeterminate:text-orange-600',
-    focus: 'peer-focus-visible:ring-orange-500/45',
-  },
-  red: {
-    checked:
-      'peer-checked:border-red-500 peer-indeterminate:border-red-500 peer-checked:shadow-[0_2px_0_0_#FCA5A5] peer-indeterminate:shadow-[0_2px_0_0_#FCA5A5]',
-    icon: 'peer-checked:text-red-600 peer-indeterminate:text-red-600',
-    focus: 'peer-focus-visible:ring-red-500/45',
-  },
-  green: {
-    checked:
-      'peer-checked:border-emerald-500 peer-indeterminate:border-emerald-500 peer-checked:shadow-[0_2px_0_0_#86EFAC] peer-indeterminate:shadow-[0_2px_0_0_#86EFAC]',
-    icon: 'peer-checked:text-emerald-600 peer-indeterminate:text-emerald-600',
-    focus: 'peer-focus-visible:ring-emerald-500/45',
-  },
-  blue: {
-    checked:
-      'peer-checked:border-blue-500 peer-indeterminate:border-blue-500 peer-checked:shadow-[0_2px_0_0_#93C5FD] peer-indeterminate:shadow-[0_2px_0_0_#93C5FD]',
-    icon: 'peer-checked:text-blue-600 peer-indeterminate:text-blue-600',
-    focus: 'peer-focus-visible:ring-blue-500/45',
-  },
-  dark: {
-    checked:
-      'peer-checked:border-zinc-700 peer-indeterminate:border-zinc-700 peer-checked:shadow-[0_2px_0_0_#A1A1AA] peer-indeterminate:shadow-[0_2px_0_0_#A1A1AA]',
-    icon: 'peer-checked:text-zinc-800 peer-indeterminate:text-zinc-800',
-    focus: 'peer-focus-visible:ring-zinc-500/45',
-  },
-  light: {
-    checked:
-      'peer-checked:border-zinc-400 peer-indeterminate:border-zinc-400 peer-checked:shadow-[0_2px_0_0_#D4D4D8] peer-indeterminate:shadow-[0_2px_0_0_#D4D4D8]',
-    icon: 'peer-checked:text-zinc-700 peer-indeterminate:text-zinc-700',
-    focus: 'peer-focus-visible:ring-zinc-500/45',
-  },
-};
-
 export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelProps>(
   (
     {
@@ -120,6 +83,7 @@ export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelP
       error,
       invalid,
       tone,
+      toneStep,
       size,
       indeterminate = false,
       checked,
@@ -136,6 +100,7 @@ export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelP
     const inputId = id ?? `check-${generatedId}`;
     const hasError = Boolean(invalid || error);
     const resolvedTone = tone ?? 'blue';
+    const resolvedToneStep = toneStep ?? 500;
     const resolvedSize = size ?? 'md';
     const descriptionId = description ? `${inputId}-description` : undefined;
     const errorId = hasError ? `${inputId}-error` : undefined;
@@ -160,7 +125,30 @@ export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelP
       inputRef.current.indeterminate = indeterminate;
     }, [indeterminate]);
 
-    const toneConfig = toneClasses[resolvedTone];
+    const iconStep = shiftColorStep(resolvedToneStep, 1);
+    const shadowStep = shiftColorStep(resolvedToneStep, -2);
+    const borderStep = shiftColorStep(resolvedToneStep, 0);
+    const ringStep = shiftColorStep(resolvedToneStep, 1);
+    const checkedBorderClass = toneStepClass('peer-checked:border', resolvedTone, borderStep);
+    const indeterminateBorderClass = toneStepClass(
+      'peer-indeterminate:border',
+      resolvedTone,
+      borderStep,
+    );
+    const checkedIconClass = toneStepClass('peer-checked:text', resolvedTone, iconStep);
+    const indeterminateIconClass = toneStepClass('peer-indeterminate:text', resolvedTone, iconStep);
+    const checkedShadowColorClass = toneStepClass('peer-checked:shadow', resolvedTone, shadowStep);
+    const indeterminateShadowColorClass = toneStepClass(
+      'peer-indeterminate:shadow',
+      resolvedTone,
+      shadowStep,
+    );
+    const focusRingClass = toneStepAlphaClass(
+      'peer-focus-visible:ring',
+      resolvedTone,
+      ringStep,
+      45,
+    );
 
     return (
       <label
@@ -187,10 +175,15 @@ export const CheckWithLabel = React.forwardRef<HTMLInputElement, CheckWithLabelP
         <span
           className={cn(
             'relative mt-0.5 inline-flex shrink-0 items-center justify-center border-2 border-zinc-300 bg-white text-transparent shadow-[0_2px_0_0_#D4D4D8] transition-all duration-150 ease-in-out group-hover:border-zinc-400 group-hover:bg-zinc-50 peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-white peer-active:translate-y-px peer-active:shadow-none',
+            'peer-checked:shadow-[0_2px_0_0] peer-indeterminate:shadow-[0_2px_0_0]',
+            checkedBorderClass,
+            indeterminateBorderClass,
+            checkedIconClass,
+            indeterminateIconClass,
+            checkedShadowColorClass,
+            indeterminateShadowColorClass,
+            focusRingClass,
             sizeClasses[resolvedSize],
-            toneConfig.checked,
-            toneConfig.icon,
-            toneConfig.focus,
             hasError &&
               'border-red-300 group-hover:border-red-400 peer-checked:border-red-500 peer-checked:shadow-[0_2px_0_0_#FCA5A5] peer-indeterminate:border-red-500 peer-indeterminate:shadow-[0_2px_0_0_#FCA5A5] peer-checked:text-red-600 peer-indeterminate:text-red-600 peer-focus-visible:ring-red-500/45',
           )}
