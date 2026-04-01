@@ -110,7 +110,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             backgroundImage: `linear-gradient(to bottom, ${colors.hoverFrom}, ${colors.hoverTo})`,
           }}
           className={cn(
-            'absolute inset-0 rounded-xl',
+            'absolute inset-0 ',
             'opacity-0 transition-opacity duration-200 ease-in-out',
             'pointer-events-none',
             !disabled && 'group-hover:opacity-100'
