@@ -90,11 +90,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           'group',
           'relative overflow-hidden',
-          'w-77.5 min-h-12',
+          'w-auto min-h-12',
           'px-5 py-3',
           'rounded-xl',
           'border-[1.6px] border-solid',
-          'flex items-center justify-center gap-2.5',
+          'inline-flex items-center justify-center gap-2.5',
           'font-bold text-[16px] leading-5.5 tracking-[-0.112px]',
           'transition-transform duration-100 ease-in-out',
           'active:scale-95',
