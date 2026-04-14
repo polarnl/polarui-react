@@ -121,14 +121,14 @@ export const Disabled: Story = {
 export const Transparent: Story = {
   args: {
     variant: 'transparent',
-    color: 'blue',
-    textColor: 'black',
     children: 'Button',
+    scheme: 'dark',
   },
 }
 export const TransparentWithIcon: Story = {
   args: {
     variant: 'transparent',
-    children: <Home />
+    children: <Home />,
+    scheme: 'light',
   },
 }

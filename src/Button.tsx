@@ -4,15 +4,29 @@ import { cn } from './cn.js';
 export type ButtonColor = 'sky' | 'orange' | 'red' | 'green' | 'blue' | 'dark' | 'light';
 export type ButtonTextColor = 'white' | 'black';
 export type ButtonIconSide = 'left' | 'right';
+export type ButtonScheme = 'dark' | 'light';
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+type ButtonBaseProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children?: React.ReactNode;
-  color?: ButtonColor;
-  textColor?: ButtonTextColor;
   icon?: React.ReactNode;
   iconSide?: ButtonIconSide;
-  variant?: 'solid' | 'transparent';
-}
+};
+
+type SolidButtonProps = ButtonBaseProps & {
+  variant?: 'solid';
+  color?: ButtonColor;
+  textColor?: ButtonTextColor;
+};
+
+type TransparentButtonProps = ButtonBaseProps & {
+  variant: 'transparent';
+  icon?: React.ReactNode;
+  iconSide?: ButtonIconSide;
+  textColor?: ButtonTextColor;
+  scheme?: ButtonScheme;
+};
+
+export type ButtonProps = SolidButtonProps | TransparentButtonProps;
 
 const solidColorConfig: Record<ButtonColor, { border: string; from: string; to: string; hoverFrom: string; hoverTo: string }> = {
   sky: {
@@ -72,8 +86,9 @@ const textColorConfig: Record<ButtonTextColor, string> = {
 };
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ children = 'Button', className, color = 'sky', textColor, icon, iconSide = 'left', disabled, variant = "solid", ...props }, ref) => {
+  ({ children = 'Button', className, icon, iconSide = 'left', disabled, variant = 'solid', ...props }, ref) => {
     if (variant == "solid") {
+      const { color = 'sky', textColor, ...buttonProps } = props as SolidButtonProps;
       const colors = solidColorConfig[color];
 
       const resolvedTextColor = textColor
@@ -104,7 +119,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             disabled && 'opacity-50 cursor-not-allowed active:scale-100',
             className
           )}
-          {...props}
+          {...buttonProps}
         >
           {/* Hover gradient overlay */}
           <span
@@ -127,18 +142,19 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       );
     }
     if (variant == "transparent") {
-      let hoverClass;
-      if (textColor === 'black') {
-        hoverClass = 'hover:bg-white/20';
-      } else {
-        hoverClass = 'hover:bg-neutral-100';
-      }
+      const { scheme = 'light', textColor, ...buttonProps } = props as TransparentButtonProps;
+      const hoverClass = scheme === 'dark' ? 'hover:bg-white/20' : 'hover:bg-neutral-100';
+      const resolvedTextColor = textColor
+        ? textColorConfig[textColor]
+        : scheme === 'dark'
+          ? textColorConfig.white
+          : textColorConfig.black;
       return (
         <button
           ref={ref}
           disabled={disabled}
           style={{
-            color: textColor,
+            color: resolvedTextColor,
           }}
           className={cn(
             `${hoverClass} font-bold relative`,
@@ -149,7 +165,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             disabled && 'opacity-50 cursor-not-allowed active:scale-100',
             className
           )}
-          {...props}
+          {...buttonProps}
         >
           <span className={cn('relative z-10 flex items-center gap-2.5', iconSide === 'right' && 'flex-row-reverse')}>
             {icon && <span className="shrink-0">{icon}</span>}
