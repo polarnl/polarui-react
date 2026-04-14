@@ -11,9 +11,10 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   textColor?: ButtonTextColor;
   icon?: React.ReactNode;
   iconSide?: ButtonIconSide;
+  variant?: 'solid' | 'transparent';
 }
 
-const colorConfig: Record<ButtonColor, { border: string; from: string; to: string; hoverFrom: string; hoverTo: string }> = {
+const solidColorConfig: Record<ButtonColor, { border: string; from: string; to: string; hoverFrom: string; hoverTo: string }> = {
   sky: {
     border: '#38bdf8',
     from: '#7DD3FC',
@@ -71,58 +72,92 @@ const textColorConfig: Record<ButtonTextColor, string> = {
 };
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ children = 'Button', className, color = 'sky', textColor, icon, iconSide = 'left', disabled, ...props }, ref) => {
-    const colors = colorConfig[color];
+  ({ children = 'Button', className, color = 'sky', textColor, icon, iconSide = 'left', disabled, variant = "solid", ...props }, ref) => {
+    if (variant == "solid") {
+      const colors = solidColorConfig[color];
 
-    const resolvedTextColor = textColor
-      ? textColorConfig[textColor]
-      : ['orange', 'red', 'blue', 'light'].includes(color) ? textColorConfig.black : textColorConfig.white;
+      const resolvedTextColor = textColor
+        ? textColorConfig[textColor]
+        : ['orange', 'red', 'blue', 'light'].includes(color) ? textColorConfig.black : textColorConfig.white;
 
-    return (
-      <button
-        ref={ref}
-        disabled={disabled}
-        style={{
-          borderColor: colors.border,
-          backgroundImage: `linear-gradient(to bottom, ${colors.from}, ${colors.to})`,
-          color: resolvedTextColor,
-        }}
-        className={cn(
-          'group',
-          'relative overflow-hidden',
-          'w-auto min-h-12',
-          'px-5 py-3',
-          'rounded-xl',
-          'border-[1.6px] border-solid',
-          'inline-flex items-center justify-center gap-2.5',
-          'font-bold text-[16px] leading-5.5 tracking-[-0.112px]',
-          'transition-transform duration-100 ease-in-out',
-          'active:scale-95',
-          'cursor-pointer',
-          disabled && 'opacity-50 cursor-not-allowed active:scale-100',
-          className
-        )}
-        {...props}
-      >
-        {/* Hover gradient overlay */}
-        <span
+      return (
+        <button
+          ref={ref}
+          disabled={disabled}
           style={{
-            backgroundImage: `linear-gradient(to bottom, ${colors.hoverFrom}, ${colors.hoverTo})`,
+            borderColor: colors.border,
+            backgroundImage: `linear-gradient(to bottom, ${colors.from}, ${colors.to})`,
+            color: resolvedTextColor,
           }}
           className={cn(
-            'absolute inset-0 ',
-            'opacity-0 transition-opacity duration-200 ease-in-out',
-            'pointer-events-none',
-            !disabled && 'group-hover:opacity-100'
+            'group',
+            'relative overflow-hidden',
+            'w-auto min-h-12',
+            'px-5 py-3',
+            'rounded-xl',
+            'border-[1.6px] border-solid',
+            'inline-flex items-center justify-center gap-2.5',
+            'font-bold text-[16px] leading-5.5 tracking-[-0.112px]',
+            'transition-transform duration-100 ease-in-out',
+            'active:scale-95',
+            'cursor-pointer',
+            disabled && 'opacity-50 cursor-not-allowed active:scale-100',
+            className
           )}
-          aria-hidden="true"
-        />
-        <span className={cn('relative z-10 flex items-center gap-2.5', iconSide === 'right' && 'flex-row-reverse')}>
-          {icon && <span className="shrink-0">{icon}</span>}
-          {children}
-        </span>
-      </button>
-    );
+          {...props}
+        >
+          {/* Hover gradient overlay */}
+          <span
+            style={{
+              backgroundImage: `linear-gradient(to bottom, ${colors.hoverFrom}, ${colors.hoverTo})`,
+            }}
+            className={cn(
+              'absolute inset-0 ',
+              'opacity-0 transition-opacity duration-200 ease-in-out',
+              'pointer-events-none',
+              !disabled && 'group-hover:opacity-100'
+            )}
+            aria-hidden="true"
+          />
+          <span className={cn('relative z-10 flex items-center gap-2.5', iconSide === 'right' && 'flex-row-reverse')}>
+            {icon && <span className="shrink-0">{icon}</span>}
+            {children}
+          </span>
+        </button>
+      );
+    }
+    if (variant == "transparent") {
+      let hoverClass;
+      if (textColor === 'black') {
+        hoverClass = 'hover:bg-white/20';
+      } else {
+        hoverClass = 'hover:bg-neutral-100';
+      }
+      return (
+        <button
+          ref={ref}
+          disabled={disabled}
+          style={{
+            color: textColor,
+          }}
+          className={cn(
+            `${hoverClass} font-bold relative`,
+            'overflow-hidden rounded-xl w-auto min-h-12 p-3',
+            'transition-colors duration-100 ease-in-out',
+            'active:scale-95',
+            'cursor-pointer',
+            disabled && 'opacity-50 cursor-not-allowed active:scale-100',
+            className
+          )}
+          {...props}
+        >
+          <span className={cn('relative z-10 flex items-center gap-2.5', iconSide === 'right' && 'flex-row-reverse')}>
+            {icon && <span className="shrink-0">{icon}</span>}
+            {children}
+          </span>
+        </button>
+      );
+    }
   }
 );
 
