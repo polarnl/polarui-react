@@ -22,7 +22,7 @@ const schemeConfig: Record<TabsScheme, { inactiveText: string }> = {
     inactiveText: '#171717',
   },
   dark: {
-    inactiveText: '#475569',
+    inactiveText: '#ffffff',
   },
 };
 
