@@ -4,9 +4,14 @@ import { cn } from './cn.js';
 
 export type TabsScheme = 'light' | 'dark';
 
+export interface Tab {
+  value: string;
+  title: React.ReactNode;
+}
+
 export interface TabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   scheme?: TabsScheme;
-  tabs?: string[];
+  tabs?: Tab[];
   activeTab?: string;
   defaultActiveTab?: string;
   onActiveTabChange?: (tab: string) => void;
@@ -15,7 +20,7 @@ export interface TabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'c
   onActiveIndexChange?: (index: number) => void;
 }
 
-const defaultTabs = ['Tab 1', 'Tab 2', 'Tab 3', 'Tab 4', 'Tab 5'];
+const defaultTabs = ['Tab 1', 'Tab 2', 'Tab 3', 'Tab 4', 'Tab 5'].map((value) => ({ value, title: value }));
 
 const schemeConfig: Record<TabsScheme, { inactiveText: string }> = {
   light: {
@@ -38,15 +43,15 @@ function clampIndex(index: number, length: number) {
   return Math.min(Math.max(index, 0), length - 1);
 }
 
-function getTabIndex(tabs: string[], tab?: string) {
+function getTabIndex(tabs: Tab[], tab?: string) {
   if (tab === undefined) {
     return -1;
   }
 
-  return tabs.indexOf(tab);
+  return tabs.findIndex(({ value }) => value === tab);
 }
 
-function resolveFallbackIndex(tabs: string[], defaultActiveTab?: string, defaultActiveIndex?: number) {
+function resolveFallbackIndex(tabs: Tab[], defaultActiveTab?: string, defaultActiveIndex?: number) {
   const defaultTabIndex = getTabIndex(tabs, defaultActiveTab);
 
   if (defaultTabIndex !== -1) {
@@ -94,7 +99,7 @@ export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
     const tabRefs = React.useRef<Array<HTMLButtonElement | null>>([]);
     const hasMountedRef = React.useRef(false);
     const schemeColors = schemeConfig[scheme];
-    const tabsKey = resolvedTabs.join('\u0000');
+    const tabsKey = resolvedTabs.map(({ value }) => value).join('\u0000');
 
     const setTabRef = React.useCallback(
       (index: number) => (node: HTMLButtonElement | null) => {
@@ -112,7 +117,7 @@ export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
           setInternalActiveIndex(nextIndex);
         }
 
-        onActiveTabChange?.(nextTab);
+        onActiveTabChange?.(nextTab.value);
         onActiveIndexChange?.(nextIndex);
       },
       [activeTab, activeIndex, onActiveTabChange, onActiveIndexChange, resolvedTabs]
@@ -214,12 +219,12 @@ export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
     return (
       <div ref={ref} data-scheme={scheme} className={cn('inline-flex flex-col items-start', className)} {...props}>
         <div role="tablist" aria-label={ariaLabel} className="relative inline-flex items-end">
-          {resolvedTabs.map((label, index) => {
+          {resolvedTabs.map(({ title, value }, index) => {
             const isActive = index === selectedIndex;
 
             return (
               <button
-                key={`${label}-${index}`}
+                key={value}
                 ref={setTabRef(index)}
                 type="button"
                 role="tab"
@@ -241,7 +246,7 @@ export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
                   color: isActive ? activeColor : schemeColors.inactiveText,
                 }}
               >
-                {label}
+                {title}
               </button>
             );
           })}

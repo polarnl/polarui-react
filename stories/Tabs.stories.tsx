@@ -2,7 +2,12 @@ import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
 import { Tabs } from '../src/index.js'
 
-const dashboardTabs = ['Users', 'Orgs', 'Roles', 'Settings']
+const dashboardTabs = [
+  { value: 'Users', title: 'Users' },
+  { value: 'Orgs', title: <><span aria-hidden="true">◆</span> Orgs</> },
+  { value: 'Roles', title: 'Roles' },
+  { value: 'Settings', title: 'Settings' },
+]
 
 const DashboardTabs = ({ scheme }: { scheme: 'light' | 'dark' }) => {
   const [activeTab, setActiveTab] = useState('Orgs')
